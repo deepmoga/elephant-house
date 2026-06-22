@@ -204,7 +204,7 @@ $products = $featuredProducts['data'] ?? [];
                 $brand = $product['brand']['name'] ?? '';
                 $catName = $product['product_category']['name'] ?? '';
             ?>
-            <div class="product-card">
+            <a href="<?php echo SITE_URL; ?>/product.php?id=<?php echo urlencode($product['id']); ?>" class="product-card">
                 <div class="product-img">
                     <?php if (!empty($imgUrl)): ?>
                     <img src="<?php echo htmlspecialchars($imgUrl); ?>" alt="<?php echo htmlspecialchars($product['name']); ?>" loading="lazy">
@@ -224,7 +224,7 @@ $products = $featuredProducts['data'] ?? [];
                         <span class="price">$<?php echo number_format($price, 2); ?></span>
                     </div>
                 </div>
-            </div>
+            </a>
             <?php endforeach; ?>
         </div>
 

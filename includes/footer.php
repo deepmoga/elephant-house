@@ -49,6 +49,8 @@
                     <li><a href="<?php echo SITE_URL; ?>"><i class="fas fa-chevron-right"></i> Home</a></li>
                     <li><a href="<?php echo SITE_URL; ?>/categories.php"><i class="fas fa-chevron-right"></i> Categories</a></li>
                     <li><a href="<?php echo SITE_URL; ?>/page.php?slug=about-us"><i class="fas fa-chevron-right"></i> About Us</a></li>
+                    <li><a href="<?php echo SITE_URL; ?>/blogs.php"><i class="fas fa-chevron-right"></i> Blog</a></li>
+                    <li><a href="<?php echo SITE_URL; ?>/faq.php"><i class="fas fa-chevron-right"></i> FAQ</a></li>
                     <li><a href="<?php echo SITE_URL; ?>/contact.php"><i class="fas fa-chevron-right"></i> Contact</a></li>
                 </ul>
             </div>

@@ -39,9 +39,26 @@ $currentAdminPage = basename($_SERVER['PHP_SELF'], '.php');
                 <i class="fas fa-sitemap"></i> Categories
             </a>
 
-            <div class="nav-section">Pages</div>
+            <div class="nav-section">Shop</div>
+            <a href="<?php echo SITE_URL; ?>/admin/orders.php" class="<?php echo $currentAdminPage === 'orders' ? 'active' : ''; ?>">
+                <i class="fas fa-shopping-bag"></i> Orders
+            </a>
+            <a href="<?php echo SITE_URL; ?>/admin/customers.php" class="<?php echo $currentAdminPage === 'customers' ? 'active' : ''; ?>">
+                <i class="fas fa-users"></i> Customers
+            </a>
+            <a href="<?php echo SITE_URL; ?>/admin/coupons.php" class="<?php echo $currentAdminPage === 'coupons' ? 'active' : ''; ?>">
+                <i class="fas fa-ticket-alt"></i> Coupons
+            </a>
+
+            <div class="nav-section">Content</div>
             <a href="<?php echo SITE_URL; ?>/admin/pages.php" class="<?php echo $currentAdminPage === 'pages' ? 'active' : ''; ?>">
-                <i class="fas fa-file-alt"></i> Manage Pages
+                <i class="fas fa-file-alt"></i> Pages
+            </a>
+            <a href="<?php echo SITE_URL; ?>/admin/blogs.php" class="<?php echo $currentAdminPage === 'blogs' ? 'active' : ''; ?>">
+                <i class="fas fa-blog"></i> Blog Posts
+            </a>
+            <a href="<?php echo SITE_URL; ?>/admin/faqs.php" class="<?php echo $currentAdminPage === 'faqs' ? 'active' : ''; ?>">
+                <i class="fas fa-question-circle"></i> FAQs
             </a>
 
             <div class="nav-section">Settings</div>

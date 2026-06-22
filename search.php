@@ -52,7 +52,7 @@ if (!empty($query)) {
                 $imgUrl = $product['image_url'] ?? '';
                 $brand = $product['brand']['name'] ?? '';
             ?>
-            <div class="product-card">
+            <a href="<?php echo SITE_URL; ?>/product.php?id=<?php echo urlencode($product['id']); ?>" class="product-card">
                 <div class="product-img">
                     <?php if (!empty($imgUrl)): ?>
                     <img src="<?php echo htmlspecialchars($imgUrl); ?>" alt="<?php echo htmlspecialchars($product['name']); ?>" loading="lazy">
@@ -69,7 +69,7 @@ if (!empty($query)) {
                         <span class="price">$<?php echo number_format($price, 2); ?></span>
                     </div>
                 </div>
-            </div>
+            </a>
             <?php endforeach; ?>
         </div>
         <?php endif; ?>

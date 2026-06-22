@@ -130,3 +130,52 @@ function getSubcategoryImages($parentId) {
     $stmt->execute([$parentId]);
     return $stmt->fetchAll();
 }
+
+function getProductById($id) {
+    $data = apiGet('products/' . $id);
+    if ($data && isset($data['data'])) {
+        $d = $data['data'];
+        return is_array($d) && isset($d[0]) ? $d[0] : $d;
+    }
+    return null;
+}
+
+function getActiveBlogs($limit = 12) {
+    $db = getDB();
+    $stmt = $db->prepare("SELECT * FROM blogs WHERE is_published = 1 ORDER BY created_at DESC LIMIT ?");
+    $stmt->bindValue(1, $limit, PDO::PARAM_INT);
+    $stmt->execute();
+    return $stmt->fetchAll();
+}
+
+function getBlogBySlug($slug) {
+    $db = getDB();
+    $stmt = $db->prepare("SELECT * FROM blogs WHERE slug = ? AND is_published = 1");
+    $stmt->execute([$slug]);
+    return $stmt->fetch();
+}
+
+function getActiveFaqs() {
+    $db = getDB();
+    return $db->query("SELECT * FROM faqs WHERE is_active = 1 ORDER BY sort_order ASC")->fetchAll();
+}
+
+function getCartCount() {
+    $count = 0;
+    if (!empty($_SESSION['cart'])) {
+        foreach ($_SESSION['cart'] as $item) {
+            $count += $item['quantity'];
+        }
+    }
+    return $count;
+}
+
+function getCartTotal() {
+    $total = 0;
+    if (!empty($_SESSION['cart'])) {
+        foreach ($_SESSION['cart'] as $item) {
+            $total += $item['price'] * $item['quantity'];
+        }
+    }
+    return $total;
+}

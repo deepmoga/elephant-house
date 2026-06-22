@@ -85,7 +85,87 @@ try {
         `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
     ) ENGINE=InnoDB");
 
-    // Migrations
+    $pdo->exec("CREATE TABLE IF NOT EXISTS `customers` (
+        `id` INT AUTO_INCREMENT PRIMARY KEY,
+        `name` VARCHAR(200) NOT NULL,
+        `email` VARCHAR(200) NOT NULL UNIQUE,
+        `phone` VARCHAR(50) DEFAULT NULL,
+        `password` VARCHAR(255) NOT NULL,
+        `address` VARCHAR(500) DEFAULT NULL,
+        `city` VARCHAR(100) DEFAULT NULL,
+        `state` VARCHAR(100) DEFAULT NULL,
+        `postcode` VARCHAR(20) DEFAULT NULL,
+        `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    ) ENGINE=InnoDB");
+
+    $pdo->exec("CREATE TABLE IF NOT EXISTS `orders` (
+        `id` INT AUTO_INCREMENT PRIMARY KEY,
+        `customer_id` INT DEFAULT NULL,
+        `order_number` VARCHAR(50) NOT NULL UNIQUE,
+        `name` VARCHAR(200) NOT NULL,
+        `email` VARCHAR(200) NOT NULL,
+        `phone` VARCHAR(50) DEFAULT NULL,
+        `address` VARCHAR(500) NOT NULL,
+        `city` VARCHAR(100) NOT NULL,
+        `state` VARCHAR(100) NOT NULL,
+        `postcode` VARCHAR(20) NOT NULL,
+        `subtotal` DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+        `discount` DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+        `coupon_code` VARCHAR(50) DEFAULT NULL,
+        `total` DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+        `status` ENUM('pending','confirmed','processing','shipped','delivered','cancelled') NOT NULL DEFAULT 'pending',
+        `notes` TEXT DEFAULT NULL,
+        `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    ) ENGINE=InnoDB");
+
+    $pdo->exec("CREATE TABLE IF NOT EXISTS `order_items` (
+        `id` INT AUTO_INCREMENT PRIMARY KEY,
+        `order_id` INT NOT NULL,
+        `product_id` VARCHAR(100) NOT NULL,
+        `product_name` VARCHAR(300) NOT NULL,
+        `product_image` VARCHAR(500) DEFAULT NULL,
+        `price` DECIMAL(10,2) NOT NULL,
+        `quantity` INT NOT NULL DEFAULT 1,
+        `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (`order_id`) REFERENCES `orders`(`id`) ON DELETE CASCADE
+    ) ENGINE=InnoDB");
+
+    $pdo->exec("CREATE TABLE IF NOT EXISTS `coupons` (
+        `id` INT AUTO_INCREMENT PRIMARY KEY,
+        `code` VARCHAR(50) NOT NULL UNIQUE,
+        `type` ENUM('percentage','fixed') NOT NULL DEFAULT 'percentage',
+        `value` DECIMAL(10,2) NOT NULL,
+        `min_order` DECIMAL(10,2) NOT NULL DEFAULT 0.00,
+        `max_uses` INT NOT NULL DEFAULT 0,
+        `used_count` INT NOT NULL DEFAULT 0,
+        `is_active` TINYINT(1) DEFAULT 1,
+        `expires_at` DATETIME DEFAULT NULL,
+        `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    ) ENGINE=InnoDB");
+
+    $pdo->exec("CREATE TABLE IF NOT EXISTS `blogs` (
+        `id` INT AUTO_INCREMENT PRIMARY KEY,
+        `title` VARCHAR(300) NOT NULL,
+        `slug` VARCHAR(300) NOT NULL UNIQUE,
+        `excerpt` TEXT DEFAULT NULL,
+        `content` LONGTEXT DEFAULT NULL,
+        `image` VARCHAR(500) DEFAULT NULL,
+        `author` VARCHAR(200) DEFAULT NULL,
+        `is_published` TINYINT(1) DEFAULT 0,
+        `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    ) ENGINE=InnoDB");
+
+    $pdo->exec("CREATE TABLE IF NOT EXISTS `faqs` (
+        `id` INT AUTO_INCREMENT PRIMARY KEY,
+        `question` VARCHAR(500) NOT NULL,
+        `answer` TEXT NOT NULL,
+        `sort_order` INT DEFAULT 0,
+        `is_active` TINYINT(1) DEFAULT 1,
+        `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    ) ENGINE=InnoDB");
+
+    // Migrations for existing installs
     $migrations = [
         "ALTER TABLE `parent_categories` ADD COLUMN `api_category_id` VARCHAR(100) NOT NULL DEFAULT '' AFTER `id`",
         "ALTER TABLE `parent_categories` ADD COLUMN `api_category_name` VARCHAR(200) NOT NULL DEFAULT '' AFTER `api_category_id`",

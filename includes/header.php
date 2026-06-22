@@ -1,9 +1,11 @@
 <?php
+if (session_status() === PHP_SESSION_NONE) { session_start(); }
 require_once __DIR__ . '/../api/fetch.php';
 $settings = getAllSettings();
 $parentCategories = getParentCategories();
 $menuCategories = getMenuCategories();
 $currentPage = basename($_SERVER['PHP_SELF'], '.php');
+$cartCount = getCartCount();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -62,13 +64,25 @@ $currentPage = basename($_SERVER['PHP_SELF'], '.php');
             </div>
 
             <div class="header-actions">
-                <a href="<?php echo SITE_URL; ?>/page.php?slug=about-us">
-                    <i class="fas fa-info-circle"></i>
-                    <span>About</span>
+                <?php if (!empty($_SESSION['customer_id'])): ?>
+                <a href="<?php echo SITE_URL; ?>/account.php">
+                    <i class="fas fa-user-circle"></i>
+                    <span>Account</span>
                 </a>
-                <a href="<?php echo SITE_URL; ?>/contact.php">
-                    <i class="fas fa-map-marker-alt"></i>
-                    <span>Find Us</span>
+                <?php else: ?>
+                <a href="<?php echo SITE_URL; ?>/login.php">
+                    <i class="fas fa-user"></i>
+                    <span>Login</span>
+                </a>
+                <?php endif; ?>
+                <a href="<?php echo SITE_URL; ?>/cart.php" class="cart-link">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>Cart</span>
+                    <?php if ($cartCount > 0): ?>
+                    <span class="cart-badge" id="cartBadge"><?php echo $cartCount; ?></span>
+                    <?php else: ?>
+                    <span class="cart-badge" id="cartBadge" style="display:none;">0</span>
+                    <?php endif; ?>
                 </a>
             </div>
         </div>
@@ -120,6 +134,8 @@ $currentPage = basename($_SERVER['PHP_SELF'], '.php');
                 <a href="<?php echo SITE_URL; ?>/categories.php" class="<?php echo $currentPage === 'categories' ? 'active' : ''; ?>">
                     <i class="fas fa-th-large"></i> All Categories
                 </a>
+                <a href="<?php echo SITE_URL; ?>/blogs.php" class="<?php echo $currentPage === 'blogs' ? 'active' : ''; ?>">Blog</a>
+                <a href="<?php echo SITE_URL; ?>/faq.php" class="<?php echo $currentPage === 'faq' ? 'active' : ''; ?>">FAQ</a>
                 <a href="<?php echo SITE_URL; ?>/page.php?slug=about-us">About Us</a>
                 <a href="<?php echo SITE_URL; ?>/contact.php" class="<?php echo $currentPage === 'contact' ? 'active' : ''; ?>">Contact</a>
             </div>
