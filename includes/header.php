@@ -14,7 +14,7 @@ $cartCount = getCartCount();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo htmlspecialchars($settings['site_name'] ?? 'Elephant House'); ?> - <?php echo htmlspecialchars($settings['site_tagline'] ?? 'Premium Grocery Store'); ?></title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <link rel="stylesheet" href="<?php echo SITE_URL; ?>/css/style.css">
+    <link rel="stylesheet" href="<?php echo SITE_URL; ?>/css/style.css?v=<?php echo time(); ?>">
     <?php if (!empty($settings['favicon'])): ?>
     <link rel="icon" href="<?php echo UPLOAD_URL . htmlspecialchars($settings['favicon']); ?>">
     <?php endif; ?>

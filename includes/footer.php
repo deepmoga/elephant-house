@@ -94,6 +94,6 @@
     <i class="fas fa-arrow-up"></i>
 </button>
 
-<script src="<?php echo SITE_URL; ?>/js/main.js"></script>
+<script src="<?php echo SITE_URL; ?>/js/main.js?v=<?php echo time(); ?>"></script>
 </body>
 </html>
