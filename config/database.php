@@ -22,7 +22,20 @@ define('UPLOAD_PATH', __DIR__ . '/../uploads/');
 define('UPLOAD_URL', SITE_URL . '/uploads/');
 
 define('API_BASE', 'https://elephanthouse.retail.lightspeed.app/api/2026-04');
-define('API_BEARER_TOKEN', '');
+
+// Load bearer token from .env file
+$envFile = __DIR__ . '/../.env';
+$envToken = '';
+if (file_exists($envFile)) {
+    $envLines = file($envFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
+    foreach ($envLines as $line) {
+        if (strpos($line, 'API_BEARER_TOKEN=') === 0) {
+            $envToken = substr($line, strlen('API_BEARER_TOKEN='));
+            break;
+        }
+    }
+}
+define('API_BEARER_TOKEN', $envToken);
 
 function getDB() {
     static $pdo = null;
