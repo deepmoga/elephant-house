@@ -1,0 +1,279 @@
+{
+    "data": [
+        {
+            "id": "ebb62e56-6e4c-4ad0-a93f-f284b69a4d6b",
+            "source_id": null,
+            "source_variant_id": null,
+            "variant_parent_id": null,
+            "family_id": "4d684b8f-874e-4cd2-9792-1ad315ee461e",
+            "name": "Elephant House Chicken Meat Balls 400g Can",
+            "variant_name": "Elephant House Chicken Meat Balls 400g Can",
+            "handle": "elephant-house-chicken-meat-balls-400g-can",
+            "sku": "4791061116507",
+            "supplier_code": null,
+            "active": false,
+            "ecwid_enabled_webstore": false,
+            "has_inventory": true,
+            "is_composite": false,
+            "description": "<p>Elephant House Chicken Meat Balls 400g Can</p>",
+            "image_url": "https://vendimageuploadcdn.global.ssl.fastly.net/350,fit,q90/vend-images/product/original/da31f2e54d148d49cca2ba84148fc9c453ee2ad1/20210928_165820.jpg",
+            "created_at": "2021-09-28T06:10:41+00:00",
+            "updated_at": "2025-09-06T00:39:03+00:00",
+            "deleted_at": null,
+            "source": "USER",
+            "account_code": null,
+            "account_code_purchase": null,
+            "supply_price": 4.5,
+            "version": 45434559703,
+            "type": {
+                "id": "7267a069-07a8-47cc-ba79-69fbe186d3a3",
+                "name": "Canned Foods",
+                "deleted_at": null,
+                "version": 18890563787
+            },
+            "product_category": {
+                "id": "7267a069-07a8-47cc-ba79-69fbe186d3a3",
+                "name": "Canned Foods",
+                "leaf_category": true,
+                "category_path": [
+                    {
+                        "id": "7267a069-07a8-47cc-ba79-69fbe186d3a3",
+                        "name": "Canned Foods"
+                    }
+                ]
+            },
+            "supplier": {
+                "id": "069db350-8d56-11ea-f6a9-b6b0930a402d",
+                "name": "Millennium Imports Pty Ltd",
+                "source": "",
+                "description": "ABN 47 626 571 006",
+                "deleted_at": null,
+                "version": 36664078260
+            },
+            "brand": {
+                "id": "069db350-8d56-11ea-f6a9-b943c0f8c1e6",
+                "name": "Elephnat House",
+                "description": "Drinks",
+                "deleted_at": null,
+                "version": 14336862639
+            },
+            "variant_options": [],
+            "categories": [
+                {
+                    "id": "b24caf98-adf0-4fdf-b540-a9a1c8697808",
+                    "name": "Elephant House Chicken Meat Balls 400g Can",
+                    "deleted_at": null,
+                    "version": 18917419056
+                }
+            ],
+            "images": [
+                {
+                    "id": "e57258ca-de8c-4ece-aa75-ff988648758b",
+                    "url": "https://vendimageuploadcdn.global.ssl.fastly.net/1920,fit/vend-images/product/original/da31f2e54d148d49cca2ba84148fc9c453ee2ad1/20210928_165820.jpg",
+                    "version": 18932470896,
+                    "sizes": {
+                        "raw": "https://vendimageuploadcdn.global.ssl.fastly.net/0x0/vend-images/product/original/da31f2e54d148d49cca2ba84148fc9c453ee2ad1/20210928_165820.jpg",
+                        "original": "https://vendimageuploadcdn.global.ssl.fastly.net/1920,fit/vend-images/product/original/da31f2e54d148d49cca2ba84148fc9c453ee2ad1/20210928_165820.jpg",
+                        "sl": "https://vendimageuploadcdn.global.ssl.fastly.net/150x150,q90/vend-images/product/original/da31f2e54d148d49cca2ba84148fc9c453ee2ad1/20210928_165820.jpg",
+                        "sm": "https://vendimageuploadcdn.global.ssl.fastly.net/100x100,q90/vend-images/product/original/da31f2e54d148d49cca2ba84148fc9c453ee2ad1/20210928_165820.jpg",
+                        "ss": "https://vendimageuploadcdn.global.ssl.fastly.net/50x50,q90/vend-images/product/original/da31f2e54d148d49cca2ba84148fc9c453ee2ad1/20210928_165820.jpg",
+                        "st": "https://vendimageuploadcdn.global.ssl.fastly.net/40x40,q90/vend-images/product/original/da31f2e54d148d49cca2ba84148fc9c453ee2ad1/20210928_165820.jpg",
+                        "standard": "https://vendimageuploadcdn.global.ssl.fastly.net/350,fit,q90/vend-images/product/original/da31f2e54d148d49cca2ba84148fc9c453ee2ad1/20210928_165820.jpg",
+                        "thumb": "https://vendimageuploadcdn.global.ssl.fastly.net/160,fit,q90/vend-images/product/original/da31f2e54d148d49cca2ba84148fc9c453ee2ad1/20210928_165820.jpg"
+                    }
+                }
+            ],
+            "skuImages": [],
+            "has_variants": false,
+            "variant_count": null,
+            "customizations": [],
+            "button_order": 0,
+            "price_including_tax": 7.20000,
+            "price_excluding_tax": 7.20000,
+            "loyalty_amount": null,
+            "product_codes": [
+                {
+                    "id": "ffc54fca-a9eb-4fbf-9bcd-e6542f3084bd",
+                    "type": "CUSTOM",
+                    "code": "4791061116507"
+                }
+            ],
+            "product_suppliers": [
+                {
+                    "id": "6e12567e-5452-4823-beb6-d04a29fb77e6",
+                    "product_id": "ebb62e56-6e4c-4ad0-a93f-f284b69a4d6b",
+                    "supplier_id": "069db350-8d56-11ea-f6a9-b6b0930a402d",
+                    "supplier_name": "Millennium Imports Pty Ltd",
+                    "code": null,
+                    "price": 4.5
+                }
+            ],
+            "packaging": {
+                "made_from": [],
+                "breaks_into": []
+            },
+            "weight": null,
+            "weight_unit": null,
+            "length": null,
+            "width": null,
+            "height": null,
+            "dimensions_unit": null,
+            "tax_category": null,
+            "attributes": [],
+            "brand_id": "069db350-8d56-11ea-f6a9-b943c0f8c1e6",
+            "product_type_id": "7267a069-07a8-47cc-ba79-69fbe186d3a3",
+            "supplier_id": "069db350-8d56-11ea-f6a9-b6b0930a402d",
+            "is_active": false,
+            "image_thumbnail_url": "https://vendimageuploadcdn.global.ssl.fastly.net/160,fit,q90/vend-images/product/original/da31f2e54d148d49cca2ba84148fc9c453ee2ad1/20210928_165820.jpg",
+            "tag_ids": [
+                "b24caf98-adf0-4fdf-b540-a9a1c8697808"
+            ]
+        },
+        {
+            "id": "069db350-8d56-11ea-f6a9-b8d1276108b2",
+            "source_id": null,
+            "source_variant_id": null,
+            "variant_parent_id": null,
+            "family_id": "31b15d31-a31b-468d-bc1a-0e011e1ea34c",
+            "name": "Country Style Corned Mutton 326g",
+            "variant_name": "Country Style Corned Mutton 326g",
+            "handle": "069db350-8d56-11ea-f6a9-b8d1275ebe87",
+            "sku": "9415093002090",
+            "supplier_code": null,
+            "active": true,
+            "ecwid_enabled_webstore": false,
+            "has_inventory": true,
+            "is_composite": false,
+            "description": "Country Style Corned Mutton 326g",
+            "image_url": "https://vendimageuploadcdn.global.ssl.fastly.net/350,fit,q90/vend-images/product/original/ab339263111ee3e5807a477f22aa9831e8944fd0/Country-Style-Halal-Corned-Mutton-326g.jpg",
+            "created_at": "2020-06-27T23:51:43+00:00",
+            "updated_at": "2025-06-06T10:06:45+00:00",
+            "deleted_at": null,
+            "source": "USER",
+            "account_code": null,
+            "account_code_purchase": null,
+            "supply_price": 7.08,
+            "version": 36157653628,
+            "type": {
+                "id": "7267a069-07a8-47cc-ba79-69fbe186d3a3",
+                "name": "Canned Foods",
+                "deleted_at": null,
+                "version": 18890563787
+            },
+            "product_category": {
+                "id": "7267a069-07a8-47cc-ba79-69fbe186d3a3",
+                "name": "Canned Foods",
+                "leaf_category": true,
+                "category_path": [
+                    {
+                        "id": "7267a069-07a8-47cc-ba79-69fbe186d3a3",
+                        "name": "Canned Foods"
+                    }
+                ]
+            },
+            "supplier": {
+                "id": "069db350-8d56-11ea-f6a9-b6c2bd20b152",
+                "name": "South Pacific Asian Foods",
+                "source": "",
+                "description": "ABN :  94 119 455 364",
+                "deleted_at": null,
+                "version": 14404273685
+            },
+            "brand": {
+                "id": "17ea1e0e-f20f-49e6-b9b9-1a8171e7ab3b",
+                "name": "Country Style",
+                "description": "Canned Foods",
+                "deleted_at": null,
+                "version": 23181304750
+            },
+            "variant_options": [],
+            "categories": [
+                {
+                    "id": "aefaee5b-a87a-4dc8-bd0e-c9650482f576",
+                    "name": "Country Style Corned Mutton 326g",
+                    "deleted_at": null,
+                    "version": 18890558006
+                },
+                {
+                    "id": "eb9ca9cf-9bc7-476d-bde0-899ea61a27fa",
+                    "name": "Country Style Corned Mutton 326g",
+                    "deleted_at": null,
+                    "version": 18890558005
+                }
+            ],
+            "images": [
+                {
+                    "id": "c7f9210a-e8f7-4994-a9c5-ab47e6fbde65",
+                    "url": "https://vendimageuploadcdn.global.ssl.fastly.net/1920,fit/vend-images/product/original/ab339263111ee3e5807a477f22aa9831e8944fd0/Country-Style-Halal-Corned-Mutton-326g.jpg",
+                    "version": 28563723864,
+                    "sizes": {
+                        "raw": "https://vendimageuploadcdn.global.ssl.fastly.net/0x0/vend-images/product/original/ab339263111ee3e5807a477f22aa9831e8944fd0/Country-Style-Halal-Corned-Mutton-326g.jpg",
+                        "original": "https://vendimageuploadcdn.global.ssl.fastly.net/1920,fit/vend-images/product/original/ab339263111ee3e5807a477f22aa9831e8944fd0/Country-Style-Halal-Corned-Mutton-326g.jpg",
+                        "sl": "https://vendimageuploadcdn.global.ssl.fastly.net/150x150,q90/vend-images/product/original/ab339263111ee3e5807a477f22aa9831e8944fd0/Country-Style-Halal-Corned-Mutton-326g.jpg",
+                        "sm": "https://vendimageuploadcdn.global.ssl.fastly.net/100x100,q90/vend-images/product/original/ab339263111ee3e5807a477f22aa9831e8944fd0/Country-Style-Halal-Corned-Mutton-326g.jpg",
+                        "ss": "https://vendimageuploadcdn.global.ssl.fastly.net/50x50,q90/vend-images/product/original/ab339263111ee3e5807a477f22aa9831e8944fd0/Country-Style-Halal-Corned-Mutton-326g.jpg",
+                        "st": "https://vendimageuploadcdn.global.ssl.fastly.net/40x40,q90/vend-images/product/original/ab339263111ee3e5807a477f22aa9831e8944fd0/Country-Style-Halal-Corned-Mutton-326g.jpg",
+                        "standard": "https://vendimageuploadcdn.global.ssl.fastly.net/350,fit,q90/vend-images/product/original/ab339263111ee3e5807a477f22aa9831e8944fd0/Country-Style-Halal-Corned-Mutton-326g.jpg",
+                        "thumb": "https://vendimageuploadcdn.global.ssl.fastly.net/160,fit,q90/vend-images/product/original/ab339263111ee3e5807a477f22aa9831e8944fd0/Country-Style-Halal-Corned-Mutton-326g.jpg"
+                    }
+                }
+            ],
+            "skuImages": [],
+            "has_variants": false,
+            "variant_count": null,
+            "customizations": [],
+            "button_order": 0,
+            "price_including_tax": 11.35000,
+            "price_excluding_tax": 11.35000,
+            "loyalty_amount": null,
+            "product_codes": [
+                {
+                    "id": "ca3333e5-f2da-b1af-8ede-83dad534735c",
+                    "type": "custom",
+                    "code": "9415093002090"
+                }
+            ],
+            "product_suppliers": [
+                {
+                    "id": "7f98f17f-c5d3-49f8-a65c-3f5efb6be111",
+                    "product_id": "069db350-8d56-11ea-f6a9-b8d1276108b2",
+                    "supplier_id": "069db350-8d56-11ea-f6a9-b6c2bd20b152",
+                    "supplier_name": "South Pacific Asian Foods",
+                    "code": null,
+                    "price": 7.08
+                }
+            ],
+            "packaging": {
+                "made_from": [],
+                "breaks_into": []
+            },
+            "weight": null,
+            "weight_unit": null,
+            "length": null,
+            "width": null,
+            "height": null,
+            "dimensions_unit": null,
+            "tax_category": null,
+            "attributes": [],
+            "brand_id": "17ea1e0e-f20f-49e6-b9b9-1a8171e7ab3b",
+            "product_type_id": "7267a069-07a8-47cc-ba79-69fbe186d3a3",
+            "supplier_id": "069db350-8d56-11ea-f6a9-b6c2bd20b152",
+            "is_active": true,
+            "image_thumbnail_url": "https://vendimageuploadcdn.global.ssl.fastly.net/160,fit,q90/vend-images/product/original/ab339263111ee3e5807a477f22aa9831e8944fd0/Country-Style-Halal-Corned-Mutton-326g.jpg",
+            "tag_ids": [
+                "aefaee5b-a87a-4dc8-bd0e-c9650482f576",
+                "eb9ca9cf-9bc7-476d-bde0-899ea61a27fa"
+            ]
+        }
+    ],
+    "total_count": 2,
+    "page_info": {
+        "start_cursor": "WyJlYmI2MmU1Ni02ZTRjLTRhZDAtYTkzZi1mMjg0YjY5YTRkNmIiLCJlYmI2MmU1Ni02ZTRjLTRhZDAtYTkzZi1mMjg0YjY5YTRkNmIiXQ==",
+        "end_cursor": "WyIwNjlkYjM1MC04ZDU2LTExZWEtZjZhOS1iOGQxMjc2MTA4YjIiLCIwNjlkYjM1MC04ZDU2LTExZWEtZjZhOS1iOGQxMjc2MTA4YjIiXQ==",
+        "has_next_page": false
+    },
+    "version": {
+        "min": 36157653628,
+        "max": 45434559703
+    }
+}

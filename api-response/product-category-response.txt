@@ -1,0 +1,1076 @@
+{
+    "data": {
+        "page_info": {
+            "has_next": false,
+            "last_seen": "069db350-8d56-11ea-f6a9-c7080c76bdfc"
+        },
+        "data": {
+            "categories": [
+                {
+                    "id": "069db350-8d56-11ea-f6a9-b8d85e86710d",
+                    "name": "Biscuits",
+                    "root_category_id": "069db350-8d56-11ea-f6a9-b8d85e86710d",
+                    "parent_category_id": null,
+                    "leaf_category": true,
+                    "category_path": [
+                        {
+                            "id": "069db350-8d56-11ea-f6a9-b8d85e86710d",
+                            "name": "Biscuits"
+                        }
+                    ],
+                    "PayloadID": ""
+                },
+                {
+                    "id": "069db350-8d56-11ea-f6a9-b8d8717885c7",
+                    "name": "Brines",
+                    "root_category_id": "069db350-8d56-11ea-f6a9-b8d8717885c7",
+                    "parent_category_id": null,
+                    "leaf_category": true,
+                    "category_path": [
+                        {
+                            "id": "069db350-8d56-11ea-f6a9-b8d8717885c7",
+                            "name": "Brines"
+                        }
+                    ],
+                    "PayloadID": ""
+                },
+                {
+                    "id": "069db350-8d56-11ea-f6a9-ba028bbc4127",
+                    "name": "Cake Ingrediants",
+                    "root_category_id": "069db350-8d56-11ea-f6a9-ba028bbc4127",
+                    "parent_category_id": null,
+                    "leaf_category": true,
+                    "category_path": [
+                        {
+                            "id": "069db350-8d56-11ea-f6a9-ba028bbc4127",
+                            "name": "Cake Ingrediants"
+                        }
+                    ],
+                    "PayloadID": ""
+                },
+                {
+                    "id": "069db350-8d56-11ea-f6a9-cf2edc08705b",
+                    "name": "Cakes",
+                    "root_category_id": "069db350-8d56-11ea-f6a9-cf2edc08705b",
+                    "parent_category_id": null,
+                    "leaf_category": true,
+                    "category_path": [
+                        {
+                            "id": "069db350-8d56-11ea-f6a9-cf2edc08705b",
+                            "name": "Cakes"
+                        }
+                    ],
+                    "PayloadID": ""
+                },
+                {
+                    "id": "7267a069-07a8-47cc-ba79-69fbe186d3a3",
+                    "name": "Canned Foods",
+                    "root_category_id": "7267a069-07a8-47cc-ba79-69fbe186d3a3",
+                    "parent_category_id": null,
+                    "leaf_category": true,
+                    "category_path": [
+                        {
+                            "id": "7267a069-07a8-47cc-ba79-69fbe186d3a3",
+                            "name": "Canned Foods"
+                        }
+                    ],
+                    "PayloadID": ""
+                },
+                {
+                    "id": "069db350-8d56-11ea-f6a9-bb4c09b5382e",
+                    "name": "Cereals",
+                    "root_category_id": "069db350-8d56-11ea-f6a9-bb4c09b5382e",
+                    "parent_category_id": null,
+                    "leaf_category": true,
+                    "category_path": [
+                        {
+                            "id": "069db350-8d56-11ea-f6a9-bb4c09b5382e",
+                            "name": "Cereals"
+                        }
+                    ],
+                    "PayloadID": ""
+                },
+                {
+                    "id": "069db350-8d56-11ea-f6a9-e5b3a4e91f5f",
+                    "name": "Chilli",
+                    "root_category_id": "069db350-8d56-11ea-f6a9-e5b3a4e91f5f",
+                    "parent_category_id": null,
+                    "leaf_category": true,
+                    "category_path": [
+                        {
+                            "id": "069db350-8d56-11ea-f6a9-e5b3a4e91f5f",
+                            "name": "Chilli"
+                        }
+                    ],
+                    "PayloadID": ""
+                },
+                {
+                    "id": "069db350-8d56-11ea-f6a9-bd2621826607",
+                    "name": "Chutneys",
+                    "root_category_id": "069db350-8d56-11ea-f6a9-bd2621826607",
+                    "parent_category_id": null,
+                    "leaf_category": true,
+                    "category_path": [
+                        {
+                            "id": "069db350-8d56-11ea-f6a9-bd2621826607",
+                            "name": "Chutneys"
+                        }
+                    ],
+                    "PayloadID": ""
+                },
+                {
+                    "id": "069db350-8d56-11ea-f6a9-b8d989369367",
+                    "name": "Coconut",
+                    "root_category_id": "069db350-8d56-11ea-f6a9-b8d989369367",
+                    "parent_category_id": null,
+                    "leaf_category": true,
+                    "category_path": [
+                        {
+                            "id": "069db350-8d56-11ea-f6a9-b8d989369367",
+                            "name": "Coconut"
+                        }
+                    ],
+                    "PayloadID": ""
+                },
+                {
+                    "id": "e8255fa9-3a37-4c95-a751-ae0784851804",
+                    "name": "coffee",
+                    "root_category_id": "e8255fa9-3a37-4c95-a751-ae0784851804",
+                    "parent_category_id": null,
+                    "leaf_category": true,
+                    "category_path": [
+                        {
+                            "id": "e8255fa9-3a37-4c95-a751-ae0784851804",
+                            "name": "coffee"
+                        }
+                    ],
+                    "PayloadID": ""
+                },
+                {
+                    "id": "069db350-8d56-11ea-f6a9-bb3797628e9e",
+                    "name": "Cordials",
+                    "root_category_id": "069db350-8d56-11ea-f6a9-bb3797628e9e",
+                    "parent_category_id": null,
+                    "leaf_category": true,
+                    "category_path": [
+                        {
+                            "id": "069db350-8d56-11ea-f6a9-bb3797628e9e",
+                            "name": "Cordials"
+                        }
+                    ],
+                    "PayloadID": ""
+                },
+                {
+                    "id": "069db350-8d56-11ea-f6a9-b8d7e744e837",
+                    "name": "Cosmatics",
+                    "root_category_id": "069db350-8d56-11ea-f6a9-b8d7e744e837",
+                    "parent_category_id": null,
+                    "leaf_category": true,
+                    "category_path": [
+                        {
+                            "id": "069db350-8d56-11ea-f6a9-b8d7e744e837",
+                            "name": "Cosmatics"
+                        }
+                    ],
+                    "PayloadID": ""
+                },
+                {
+                    "id": "069db350-8d56-11ea-f6a9-ba01ee906b9b",
+                    "name": "Creams",
+                    "root_category_id": "069db350-8d56-11ea-f6a9-ba01ee906b9b",
+                    "parent_category_id": null,
+                    "leaf_category": true,
+                    "category_path": [
+                        {
+                            "id": "069db350-8d56-11ea-f6a9-ba01ee906b9b",
+                            "name": "Creams"
+                        }
+                    ],
+                    "PayloadID": ""
+                },
+                {
+                    "id": "069db350-8d56-11ea-f6a9-c434bda7a27b",
+                    "name": "Curry Mix",
+                    "root_category_id": "069db350-8d56-11ea-f6a9-c434bda7a27b",
+                    "parent_category_id": null,
+                    "leaf_category": true,
+                    "category_path": [
+                        {
+                            "id": "069db350-8d56-11ea-f6a9-c434bda7a27b",
+                            "name": "Curry Mix"
+                        }
+                    ],
+                    "PayloadID": ""
+                },
+                {
+                    "id": "069db350-8d56-11ea-f6a9-c8f32d8da7a9",
+                    "name": "Curry Powders",
+                    "root_category_id": "069db350-8d56-11ea-f6a9-c8f32d8da7a9",
+                    "parent_category_id": null,
+                    "leaf_category": true,
+                    "category_path": [
+                        {
+                            "id": "069db350-8d56-11ea-f6a9-c8f32d8da7a9",
+                            "name": "Curry Powders"
+                        }
+                    ],
+                    "PayloadID": ""
+                },
+                {
+                    "id": "069db350-8d56-11ea-f6a9-b8d8b0494bb8",
+                    "name": "Dehydrated",
+                    "root_category_id": "069db350-8d56-11ea-f6a9-b8d8b0494bb8",
+                    "parent_category_id": null,
+                    "leaf_category": true,
+                    "category_path": [
+                        {
+                            "id": "069db350-8d56-11ea-f6a9-b8d8b0494bb8",
+                            "name": "Dehydrated"
+                        }
+                    ],
+                    "PayloadID": ""
+                },
+                {
+                    "id": "069db350-8d56-11ea-f6a9-c8f361e53e10",
+                    "name": "Dehydrated",
+                    "root_category_id": "069db350-8d56-11ea-f6a9-c8f361e53e10",
+                    "parent_category_id": null,
+                    "leaf_category": true,
+                    "category_path": [
+                        {
+                            "id": "069db350-8d56-11ea-f6a9-c8f361e53e10",
+                            "name": "Dehydrated"
+                        }
+                    ],
+                    "PayloadID": ""
+                },
+                {
+                    "id": "adc5def4-b311-4e64-8894-0e0adc71dabd",
+                    "name": "Derana Peanut Candy 200g",
+                    "root_category_id": "adc5def4-b311-4e64-8894-0e0adc71dabd",
+                    "parent_category_id": null,
+                    "leaf_category": true,
+                    "category_path": [
+                        {
+                            "id": "adc5def4-b311-4e64-8894-0e0adc71dabd",
+                            "name": "Derana Peanut Candy 200g"
+                        }
+                    ],
+                    "PayloadID": ""
+                },
+                {
+                    "id": "069db350-8d56-11ea-f6a9-c8ee4b7d86fd",
+                    "name": "Dhal and Lentils",
+                    "root_category_id": "069db350-8d56-11ea-f6a9-c8ee4b7d86fd",
+                    "parent_category_id": null,
+                    "leaf_category": true,
+                    "category_path": [
+                        {
+                            "id": "069db350-8d56-11ea-f6a9-c8ee4b7d86fd",
+                            "name": "Dhal and Lentils"
+                        }
+                    ],
+                    "PayloadID": ""
+                },
+                {
+                    "id": "069db350-8d56-11ea-f6a9-b8d7dfb54bf6",
+                    "name": "Drinks",
+                    "root_category_id": "069db350-8d56-11ea-f6a9-b8d7dfb54bf6",
+                    "parent_category_id": null,
+                    "leaf_category": true,
+                    "category_path": [
+                        {
+                            "id": "069db350-8d56-11ea-f6a9-b8d7dfb54bf6",
+                            "name": "Drinks"
+                        }
+                    ],
+                    "PayloadID": ""
+                },
+                {
+                    "id": "069db350-8d56-11ea-f6a9-b8d86bd2fceb",
+                    "name": "Dry",
+                    "root_category_id": "069db350-8d56-11ea-f6a9-b8d86bd2fceb",
+                    "parent_category_id": null,
+                    "leaf_category": true,
+                    "category_path": [
+                        {
+                            "id": "069db350-8d56-11ea-f6a9-b8d86bd2fceb",
+                            "name": "Dry"
+                        }
+                    ],
+                    "PayloadID": ""
+                },
+                {
+                    "id": "069db350-8d56-11ea-f6a9-c8f365f401c6",
+                    "name": "Dry Fish",
+                    "root_category_id": "069db350-8d56-11ea-f6a9-c8f365f401c6",
+                    "parent_category_id": null,
+                    "leaf_category": true,
+                    "category_path": [
+                        {
+                            "id": "069db350-8d56-11ea-f6a9-c8f365f401c6",
+                            "name": "Dry Fish"
+                        }
+                    ],
+                    "PayloadID": ""
+                },
+                {
+                    "id": "1dcca583-c8d5-5557-a7f3-0e62dc90e496",
+                    "name": "Eggs",
+                    "root_category_id": "1dcca583-c8d5-5557-a7f3-0e62dc90e496",
+                    "parent_category_id": null,
+                    "leaf_category": true,
+                    "category_path": [
+                        {
+                            "id": "1dcca583-c8d5-5557-a7f3-0e62dc90e496",
+                            "name": "Eggs"
+                        }
+                    ],
+                    "PayloadID": ""
+                },
+                {
+                    "id": "77282f0e-ce93-842f-9a26-de6710c36286",
+                    "name": "Energy Drink",
+                    "root_category_id": "77282f0e-ce93-842f-9a26-de6710c36286",
+                    "parent_category_id": null,
+                    "leaf_category": true,
+                    "category_path": [
+                        {
+                            "id": "77282f0e-ce93-842f-9a26-de6710c36286",
+                            "name": "Energy Drink"
+                        }
+                    ],
+                    "PayloadID": ""
+                },
+                {
+                    "id": "069db350-8d56-11ea-f6a9-c8f382b1f70f",
+                    "name": "Flavors",
+                    "root_category_id": "069db350-8d56-11ea-f6a9-c8f382b1f70f",
+                    "parent_category_id": null,
+                    "leaf_category": true,
+                    "category_path": [
+                        {
+                            "id": "069db350-8d56-11ea-f6a9-c8f382b1f70f",
+                            "name": "Flavors"
+                        }
+                    ],
+                    "PayloadID": ""
+                },
+                {
+                    "id": "069db350-8d56-11ea-f6a9-b8d8ddb8ba35",
+                    "name": "Flours",
+                    "root_category_id": "069db350-8d56-11ea-f6a9-b8d8ddb8ba35",
+                    "parent_category_id": null,
+                    "leaf_category": true,
+                    "category_path": [
+                        {
+                            "id": "069db350-8d56-11ea-f6a9-b8d8ddb8ba35",
+                            "name": "Flours"
+                        }
+                    ],
+                    "PayloadID": ""
+                },
+                {
+                    "id": "51ae0545-b8c1-4863-a14a-700c8c344441",
+                    "name": "Fresh",
+                    "root_category_id": "51ae0545-b8c1-4863-a14a-700c8c344441",
+                    "parent_category_id": null,
+                    "leaf_category": true,
+                    "category_path": [
+                        {
+                            "id": "51ae0545-b8c1-4863-a14a-700c8c344441",
+                            "name": "Fresh"
+                        }
+                    ],
+                    "PayloadID": ""
+                },
+                {
+                    "id": "069db350-8d56-11ea-f6a9-b8d8cc35d722",
+                    "name": "Fried",
+                    "root_category_id": "069db350-8d56-11ea-f6a9-b8d8cc35d722",
+                    "parent_category_id": null,
+                    "leaf_category": true,
+                    "category_path": [
+                        {
+                            "id": "069db350-8d56-11ea-f6a9-b8d8cc35d722",
+                            "name": "Fried"
+                        }
+                    ],
+                    "PayloadID": ""
+                },
+                {
+                    "id": "069db350-8d56-11ea-f6a9-b8d8d1eac5fd",
+                    "name": "Frozen",
+                    "root_category_id": "069db350-8d56-11ea-f6a9-b8d8d1eac5fd",
+                    "parent_category_id": null,
+                    "leaf_category": true,
+                    "category_path": [
+                        {
+                            "id": "069db350-8d56-11ea-f6a9-b8d8d1eac5fd",
+                            "name": "Frozen"
+                        }
+                    ],
+                    "PayloadID": ""
+                },
+                {
+                    "id": "b61eee08-cb9a-44be-83b7-c86564060670",
+                    "name": "frozen fish",
+                    "root_category_id": "b61eee08-cb9a-44be-83b7-c86564060670",
+                    "parent_category_id": null,
+                    "leaf_category": true,
+                    "category_path": [
+                        {
+                            "id": "b61eee08-cb9a-44be-83b7-c86564060670",
+                            "name": "frozen fish"
+                        }
+                    ],
+                    "PayloadID": ""
+                },
+                {
+                    "id": "02a7ceeb-b9b9-4acc-9e43-9ed82f077d5f",
+                    "name": "frozen fruit",
+                    "root_category_id": "02a7ceeb-b9b9-4acc-9e43-9ed82f077d5f",
+                    "parent_category_id": null,
+                    "leaf_category": true,
+                    "category_path": [
+                        {
+                            "id": "02a7ceeb-b9b9-4acc-9e43-9ed82f077d5f",
+                            "name": "frozen fruit"
+                        }
+                    ],
+                    "PayloadID": ""
+                },
+                {
+                    "id": "a20d8ba3-867f-8d4c-61bd-a1a3d5c62cb2",
+                    "name": "Fruits",
+                    "root_category_id": "a20d8ba3-867f-8d4c-61bd-a1a3d5c62cb2",
+                    "parent_category_id": null,
+                    "leaf_category": true,
+                    "category_path": [
+                        {
+                            "id": "a20d8ba3-867f-8d4c-61bd-a1a3d5c62cb2",
+                            "name": "Fruits"
+                        }
+                    ],
+                    "PayloadID": ""
+                },
+                {
+                    "id": "eb2f7b9c-e2ac-aeb7-562b-8897bf84aad2",
+                    "name": "Ghee",
+                    "root_category_id": "eb2f7b9c-e2ac-aeb7-562b-8897bf84aad2",
+                    "parent_category_id": null,
+                    "leaf_category": true,
+                    "category_path": [
+                        {
+                            "id": "eb2f7b9c-e2ac-aeb7-562b-8897bf84aad2",
+                            "name": "Ghee"
+                        }
+                    ],
+                    "PayloadID": ""
+                },
+                {
+                    "id": "069db350-8d56-11ea-f6a9-bd26272c83ad",
+                    "name": "Grains",
+                    "root_category_id": "069db350-8d56-11ea-f6a9-bd26272c83ad",
+                    "parent_category_id": null,
+                    "leaf_category": true,
+                    "category_path": [
+                        {
+                            "id": "069db350-8d56-11ea-f6a9-bd26272c83ad",
+                            "name": "Grains"
+                        }
+                    ],
+                    "PayloadID": ""
+                },
+                {
+                    "id": "069db350-8d56-11ea-f6a9-b8d7c7d56aac",
+                    "name": "Groceries",
+                    "root_category_id": "069db350-8d56-11ea-f6a9-b8d7c7d56aac",
+                    "parent_category_id": null,
+                    "leaf_category": true,
+                    "category_path": [
+                        {
+                            "id": "069db350-8d56-11ea-f6a9-b8d7c7d56aac",
+                            "name": "Groceries"
+                        }
+                    ],
+                    "PayloadID": ""
+                },
+                {
+                    "id": "28162d3a-bfc1-406f-986b-6657dc070370",
+                    "name": "Grocery Test",
+                    "root_category_id": "28162d3a-bfc1-406f-986b-6657dc070370",
+                    "parent_category_id": null,
+                    "leaf_category": true,
+                    "category_path": [
+                        {
+                            "id": "28162d3a-bfc1-406f-986b-6657dc070370",
+                            "name": "Grocery Test"
+                        }
+                    ],
+                    "PayloadID": ""
+                },
+                {
+                    "id": "069db350-8d56-11ea-f6a9-bbf18ac7fd02",
+                    "name": "Hot Food",
+                    "root_category_id": "069db350-8d56-11ea-f6a9-bbf18ac7fd02",
+                    "parent_category_id": null,
+                    "leaf_category": true,
+                    "category_path": [
+                        {
+                            "id": "069db350-8d56-11ea-f6a9-bbf18ac7fd02",
+                            "name": "Hot Food"
+                        }
+                    ],
+                    "PayloadID": ""
+                },
+                {
+                    "id": "069db350-8d56-11ea-f6a9-c8f338e3899c",
+                    "name": "Incense Stickes",
+                    "root_category_id": "069db350-8d56-11ea-f6a9-c8f338e3899c",
+                    "parent_category_id": null,
+                    "leaf_category": true,
+                    "category_path": [
+                        {
+                            "id": "069db350-8d56-11ea-f6a9-c8f338e3899c",
+                            "name": "Incense Stickes"
+                        }
+                    ],
+                    "PayloadID": ""
+                },
+                {
+                    "id": "069db350-8d56-11ea-f6a9-e45b7a72c4a4",
+                    "name": "Jaggery",
+                    "root_category_id": "069db350-8d56-11ea-f6a9-e45b7a72c4a4",
+                    "parent_category_id": null,
+                    "leaf_category": true,
+                    "category_path": [
+                        {
+                            "id": "069db350-8d56-11ea-f6a9-e45b7a72c4a4",
+                            "name": "Jaggery"
+                        }
+                    ],
+                    "PayloadID": ""
+                },
+                {
+                    "id": "069db350-8d56-11ea-f6a9-c239901a80ee",
+                    "name": "Jams",
+                    "root_category_id": "069db350-8d56-11ea-f6a9-c239901a80ee",
+                    "parent_category_id": null,
+                    "leaf_category": true,
+                    "category_path": [
+                        {
+                            "id": "069db350-8d56-11ea-f6a9-c239901a80ee",
+                            "name": "Jams"
+                        }
+                    ],
+                    "PayloadID": ""
+                },
+                {
+                    "id": "069db350-8d56-11ea-f6a9-cf494da9dac3",
+                    "name": "Jellys",
+                    "root_category_id": "069db350-8d56-11ea-f6a9-cf494da9dac3",
+                    "parent_category_id": null,
+                    "leaf_category": true,
+                    "category_path": [
+                        {
+                            "id": "069db350-8d56-11ea-f6a9-cf494da9dac3",
+                            "name": "Jellys"
+                        }
+                    ],
+                    "PayloadID": ""
+                },
+                {
+                    "id": "01817b52-5c4a-4bbf-8c73-1aa35affa25c",
+                    "name": "Ma's Colombo Chicken Curry Paste 60g",
+                    "root_category_id": "01817b52-5c4a-4bbf-8c73-1aa35affa25c",
+                    "parent_category_id": null,
+                    "leaf_category": true,
+                    "category_path": [
+                        {
+                            "id": "01817b52-5c4a-4bbf-8c73-1aa35affa25c",
+                            "name": "Ma's Colombo Chicken Curry Paste 60g"
+                        }
+                    ],
+                    "PayloadID": ""
+                },
+                {
+                    "id": "069db350-8d56-11ea-f6a9-b9f8f9aabd87",
+                    "name": "Mackerel",
+                    "root_category_id": "069db350-8d56-11ea-f6a9-b9f8f9aabd87",
+                    "parent_category_id": null,
+                    "leaf_category": true,
+                    "category_path": [
+                        {
+                            "id": "069db350-8d56-11ea-f6a9-b9f8f9aabd87",
+                            "name": "Mackerel"
+                        }
+                    ],
+                    "PayloadID": ""
+                },
+                {
+                    "id": "069db350-8d56-11ea-f6a9-bd26357f1d80",
+                    "name": "Mackerel",
+                    "root_category_id": "069db350-8d56-11ea-f6a9-bd26357f1d80",
+                    "parent_category_id": null,
+                    "leaf_category": true,
+                    "category_path": [
+                        {
+                            "id": "069db350-8d56-11ea-f6a9-bd26357f1d80",
+                            "name": "Mackerel"
+                        }
+                    ],
+                    "PayloadID": ""
+                },
+                {
+                    "id": "069db350-8d56-11ea-f6a9-b8d8e7c9d300",
+                    "name": "Medicines",
+                    "root_category_id": "069db350-8d56-11ea-f6a9-b8d8e7c9d300",
+                    "parent_category_id": null,
+                    "leaf_category": true,
+                    "category_path": [
+                        {
+                            "id": "069db350-8d56-11ea-f6a9-b8d8e7c9d300",
+                            "name": "Medicines"
+                        }
+                    ],
+                    "PayloadID": ""
+                },
+                {
+                    "id": "069db350-8d56-11ea-f6a9-bd263ddb3e59",
+                    "name": "Milk Foods",
+                    "root_category_id": "069db350-8d56-11ea-f6a9-bd263ddb3e59",
+                    "parent_category_id": null,
+                    "leaf_category": true,
+                    "category_path": [
+                        {
+                            "id": "069db350-8d56-11ea-f6a9-bd263ddb3e59",
+                            "name": "Milk Foods"
+                        }
+                    ],
+                    "PayloadID": ""
+                },
+                {
+                    "id": "069db350-8d56-11ea-f6a9-b8d844f81d69",
+                    "name": "Miscellaneous",
+                    "root_category_id": "069db350-8d56-11ea-f6a9-b8d844f81d69",
+                    "parent_category_id": null,
+                    "leaf_category": true,
+                    "category_path": [
+                        {
+                            "id": "069db350-8d56-11ea-f6a9-b8d844f81d69",
+                            "name": "Miscellaneous"
+                        }
+                    ],
+                    "PayloadID": ""
+                },
+                {
+                    "id": "069db350-8d56-11ea-f6a9-b90ea2d66619",
+                    "name": "Noodles",
+                    "root_category_id": "069db350-8d56-11ea-f6a9-b90ea2d66619",
+                    "parent_category_id": null,
+                    "leaf_category": true,
+                    "category_path": [
+                        {
+                            "id": "069db350-8d56-11ea-f6a9-b90ea2d66619",
+                            "name": "Noodles"
+                        }
+                    ],
+                    "PayloadID": ""
+                },
+                {
+                    "id": "069db350-8d56-11ea-f6a9-b8d7eb8cb490",
+                    "name": "Oils",
+                    "root_category_id": "069db350-8d56-11ea-f6a9-b8d7eb8cb490",
+                    "parent_category_id": null,
+                    "leaf_category": true,
+                    "category_path": [
+                        {
+                            "id": "069db350-8d56-11ea-f6a9-b8d7eb8cb490",
+                            "name": "Oils"
+                        }
+                    ],
+                    "PayloadID": ""
+                },
+                {
+                    "id": "069db350-8d56-11ea-f6a9-bad10ff39600",
+                    "name": "Papadam",
+                    "root_category_id": "069db350-8d56-11ea-f6a9-bad10ff39600",
+                    "parent_category_id": null,
+                    "leaf_category": true,
+                    "category_path": [
+                        {
+                            "id": "069db350-8d56-11ea-f6a9-bad10ff39600",
+                            "name": "Papadam"
+                        }
+                    ],
+                    "PayloadID": ""
+                },
+                {
+                    "id": "069db350-8d56-11ea-f6a9-b8d88fd9a48f",
+                    "name": "Pastes",
+                    "root_category_id": "069db350-8d56-11ea-f6a9-b8d88fd9a48f",
+                    "parent_category_id": null,
+                    "leaf_category": true,
+                    "category_path": [
+                        {
+                            "id": "069db350-8d56-11ea-f6a9-b8d88fd9a48f",
+                            "name": "Pastes"
+                        }
+                    ],
+                    "PayloadID": ""
+                },
+                {
+                    "id": "069db350-8d56-11ea-f6a9-b913f92f8e91",
+                    "name": "Pickles",
+                    "root_category_id": "069db350-8d56-11ea-f6a9-b913f92f8e91",
+                    "parent_category_id": null,
+                    "leaf_category": true,
+                    "category_path": [
+                        {
+                            "id": "069db350-8d56-11ea-f6a9-b913f92f8e91",
+                            "name": "Pickles"
+                        }
+                    ],
+                    "PayloadID": ""
+                },
+                {
+                    "id": "069db350-8d56-11ea-f6a9-e5b3aa5a6b06",
+                    "name": "Pieces",
+                    "root_category_id": "069db350-8d56-11ea-f6a9-e5b3aa5a6b06",
+                    "parent_category_id": null,
+                    "leaf_category": true,
+                    "category_path": [
+                        {
+                            "id": "069db350-8d56-11ea-f6a9-e5b3aa5a6b06",
+                            "name": "Pieces"
+                        }
+                    ],
+                    "PayloadID": ""
+                },
+                {
+                    "id": "069db350-8d56-11ea-f6a9-c42d70c692e1",
+                    "name": "Poridge",
+                    "root_category_id": "069db350-8d56-11ea-f6a9-c42d70c692e1",
+                    "parent_category_id": null,
+                    "leaf_category": true,
+                    "category_path": [
+                        {
+                            "id": "069db350-8d56-11ea-f6a9-c42d70c692e1",
+                            "name": "Poridge"
+                        }
+                    ],
+                    "PayloadID": ""
+                },
+                {
+                    "id": "81acdbf3-df01-43b8-9bb2-b639347b4aae",
+                    "name": "Pure Juice",
+                    "root_category_id": "81acdbf3-df01-43b8-9bb2-b639347b4aae",
+                    "parent_category_id": null,
+                    "leaf_category": true,
+                    "category_path": [
+                        {
+                            "id": "81acdbf3-df01-43b8-9bb2-b639347b4aae",
+                            "name": "Pure Juice"
+                        }
+                    ],
+                    "PayloadID": ""
+                },
+                {
+                    "id": "069db350-8d56-11ea-f6a9-c8f35b5c1ded",
+                    "name": "Quills",
+                    "root_category_id": "069db350-8d56-11ea-f6a9-c8f35b5c1ded",
+                    "parent_category_id": null,
+                    "leaf_category": true,
+                    "category_path": [
+                        {
+                            "id": "069db350-8d56-11ea-f6a9-c8f35b5c1ded",
+                            "name": "Quills"
+                        }
+                    ],
+                    "PayloadID": ""
+                },
+                {
+                    "id": "069db350-8d56-11ea-f6a9-b8d887f2d63f",
+                    "name": "Ready to eat",
+                    "root_category_id": "069db350-8d56-11ea-f6a9-b8d887f2d63f",
+                    "parent_category_id": null,
+                    "leaf_category": true,
+                    "category_path": [
+                        {
+                            "id": "069db350-8d56-11ea-f6a9-b8d887f2d63f",
+                            "name": "Ready to eat"
+                        }
+                    ],
+                    "PayloadID": ""
+                },
+                {
+                    "id": "069db350-8d56-11ea-f6a9-b8d8641f65e6",
+                    "name": "Rice",
+                    "root_category_id": "069db350-8d56-11ea-f6a9-b8d8641f65e6",
+                    "parent_category_id": null,
+                    "leaf_category": true,
+                    "category_path": [
+                        {
+                            "id": "069db350-8d56-11ea-f6a9-b8d8641f65e6",
+                            "name": "Rice"
+                        }
+                    ],
+                    "PayloadID": ""
+                },
+                {
+                    "id": "069db350-8d56-11ea-f6a9-bda6e7c33b68",
+                    "name": "Rotis",
+                    "root_category_id": "069db350-8d56-11ea-f6a9-bda6e7c33b68",
+                    "parent_category_id": null,
+                    "leaf_category": true,
+                    "category_path": [
+                        {
+                            "id": "069db350-8d56-11ea-f6a9-bda6e7c33b68",
+                            "name": "Rotis"
+                        }
+                    ],
+                    "PayloadID": ""
+                },
+                {
+                    "id": "069db350-8d56-11ea-f6a9-bad076c0337b",
+                    "name": "Salt",
+                    "root_category_id": "069db350-8d56-11ea-f6a9-bad076c0337b",
+                    "parent_category_id": null,
+                    "leaf_category": true,
+                    "category_path": [
+                        {
+                            "id": "069db350-8d56-11ea-f6a9-bad076c0337b",
+                            "name": "Salt"
+                        }
+                    ],
+                    "PayloadID": ""
+                },
+                {
+                    "id": "069db350-8d56-11ea-f6a9-c8f3d7d13af0",
+                    "name": "Sambols",
+                    "root_category_id": "069db350-8d56-11ea-f6a9-c8f3d7d13af0",
+                    "parent_category_id": null,
+                    "leaf_category": true,
+                    "category_path": [
+                        {
+                            "id": "069db350-8d56-11ea-f6a9-c8f3d7d13af0",
+                            "name": "Sambols"
+                        }
+                    ],
+                    "PayloadID": ""
+                },
+                {
+                    "id": "069db350-8d56-11ea-f6a9-b9138be89426",
+                    "name": "Sauces",
+                    "root_category_id": "069db350-8d56-11ea-f6a9-b9138be89426",
+                    "parent_category_id": null,
+                    "leaf_category": true,
+                    "category_path": [
+                        {
+                            "id": "069db350-8d56-11ea-f6a9-b9138be89426",
+                            "name": "Sauces"
+                        }
+                    ],
+                    "PayloadID": ""
+                },
+                {
+                    "id": "48d06b5c-970e-eeaa-b153-ae36ed4bbd8e",
+                    "name": "Savoury",
+                    "root_category_id": "48d06b5c-970e-eeaa-b153-ae36ed4bbd8e",
+                    "parent_category_id": null,
+                    "leaf_category": true,
+                    "category_path": [
+                        {
+                            "id": "48d06b5c-970e-eeaa-b153-ae36ed4bbd8e",
+                            "name": "Savoury"
+                        }
+                    ],
+                    "PayloadID": ""
+                },
+                {
+                    "id": "069db350-8d56-11ea-f6a9-b8d89c4e9551",
+                    "name": "Seeds",
+                    "root_category_id": "069db350-8d56-11ea-f6a9-b8d89c4e9551",
+                    "parent_category_id": null,
+                    "leaf_category": true,
+                    "category_path": [
+                        {
+                            "id": "069db350-8d56-11ea-f6a9-b8d89c4e9551",
+                            "name": "Seeds"
+                        }
+                    ],
+                    "PayloadID": ""
+                },
+                {
+                    "id": "069db350-8d56-11ea-f6a9-b8d8c0ad3cf5",
+                    "name": "Snacks",
+                    "root_category_id": "069db350-8d56-11ea-f6a9-b8d8c0ad3cf5",
+                    "parent_category_id": null,
+                    "leaf_category": true,
+                    "category_path": [
+                        {
+                            "id": "069db350-8d56-11ea-f6a9-b8d8c0ad3cf5",
+                            "name": "Snacks"
+                        }
+                    ],
+                    "PayloadID": ""
+                },
+                {
+                    "id": "069db350-8d56-11ea-f6a9-bb58a7b50a01",
+                    "name": "Soap",
+                    "root_category_id": "069db350-8d56-11ea-f6a9-bb58a7b50a01",
+                    "parent_category_id": null,
+                    "leaf_category": true,
+                    "category_path": [
+                        {
+                            "id": "069db350-8d56-11ea-f6a9-bb58a7b50a01",
+                            "name": "Soap"
+                        }
+                    ],
+                    "PayloadID": ""
+                },
+                {
+                    "id": "db43060a-593c-0009-b607-f3f0b17292ec",
+                    "name": "Soups",
+                    "root_category_id": "db43060a-593c-0009-b607-f3f0b17292ec",
+                    "parent_category_id": null,
+                    "leaf_category": true,
+                    "category_path": [
+                        {
+                            "id": "db43060a-593c-0009-b607-f3f0b17292ec",
+                            "name": "Soups"
+                        }
+                    ],
+                    "PayloadID": ""
+                },
+                {
+                    "id": "069db350-8d56-11ea-f6a9-b8d97c776c3d",
+                    "name": "Soya",
+                    "root_category_id": "069db350-8d56-11ea-f6a9-b8d97c776c3d",
+                    "parent_category_id": null,
+                    "leaf_category": true,
+                    "category_path": [
+                        {
+                            "id": "069db350-8d56-11ea-f6a9-b8d97c776c3d",
+                            "name": "Soya"
+                        }
+                    ],
+                    "PayloadID": ""
+                },
+                {
+                    "id": "069db350-8d56-11ea-f6a9-b8d8797837d4",
+                    "name": "Spices",
+                    "root_category_id": "069db350-8d56-11ea-f6a9-b8d8797837d4",
+                    "parent_category_id": null,
+                    "leaf_category": true,
+                    "category_path": [
+                        {
+                            "id": "069db350-8d56-11ea-f6a9-b8d8797837d4",
+                            "name": "Spices"
+                        }
+                    ],
+                    "PayloadID": ""
+                },
+                {
+                    "id": "069db350-8d56-11ea-f6a9-b8d7db885c7d",
+                    "name": "Sweets",
+                    "root_category_id": "069db350-8d56-11ea-f6a9-b8d7db885c7d",
+                    "parent_category_id": null,
+                    "leaf_category": true,
+                    "category_path": [
+                        {
+                            "id": "069db350-8d56-11ea-f6a9-b8d7db885c7d",
+                            "name": "Sweets"
+                        }
+                    ],
+                    "PayloadID": ""
+                },
+                {
+                    "id": "069db350-8d56-11ea-f6a9-c8f353aff027",
+                    "name": "Syrups",
+                    "root_category_id": "069db350-8d56-11ea-f6a9-c8f353aff027",
+                    "parent_category_id": null,
+                    "leaf_category": true,
+                    "category_path": [
+                        {
+                            "id": "069db350-8d56-11ea-f6a9-c8f353aff027",
+                            "name": "Syrups"
+                        }
+                    ],
+                    "PayloadID": ""
+                },
+                {
+                    "id": "069db350-8d56-11ea-f6a9-ba079d434153",
+                    "name": "Tea",
+                    "root_category_id": "069db350-8d56-11ea-f6a9-ba079d434153",
+                    "parent_category_id": null,
+                    "leaf_category": true,
+                    "category_path": [
+                        {
+                            "id": "069db350-8d56-11ea-f6a9-ba079d434153",
+                            "name": "Tea"
+                        }
+                    ],
+                    "PayloadID": ""
+                },
+                {
+                    "id": "069db350-8d56-11ea-f6a9-bad17210f18a",
+                    "name": "Tea & Coffee",
+                    "root_category_id": "069db350-8d56-11ea-f6a9-bad17210f18a",
+                    "parent_category_id": null,
+                    "leaf_category": true,
+                    "category_path": [
+                        {
+                            "id": "069db350-8d56-11ea-f6a9-bad17210f18a",
+                            "name": "Tea & Coffee"
+                        }
+                    ],
+                    "PayloadID": ""
+                },
+                {
+                    "id": "069db350-8d56-11ea-f6a9-e5152297ae31",
+                    "name": "Tooth Paste",
+                    "root_category_id": "069db350-8d56-11ea-f6a9-e5152297ae31",
+                    "parent_category_id": null,
+                    "leaf_category": true,
+                    "category_path": [
+                        {
+                            "id": "069db350-8d56-11ea-f6a9-e5152297ae31",
+                            "name": "Tooth Paste"
+                        }
+                    ],
+                    "PayloadID": ""
+                },
+                {
+                    "id": "069db350-8d56-11ea-f6a9-e45a91eb026f",
+                    "name": "Treacle",
+                    "root_category_id": "069db350-8d56-11ea-f6a9-e45a91eb026f",
+                    "parent_category_id": null,
+                    "leaf_category": true,
+                    "category_path": [
+                        {
+                            "id": "069db350-8d56-11ea-f6a9-e45a91eb026f",
+                            "name": "Treacle"
+                        }
+                    ],
+                    "PayloadID": ""
+                },
+                {
+                    "id": "069db350-8d56-11ea-f6a9-c7080c76bdfc",
+                    "name": "Vingar",
+                    "root_category_id": "069db350-8d56-11ea-f6a9-c7080c76bdfc",
+                    "parent_category_id": null,
+                    "leaf_category": true,
+                    "category_path": [
+                        {
+                            "id": "069db350-8d56-11ea-f6a9-c7080c76bdfc",
+                            "name": "Vingar"
+                        }
+                    ],
+                    "PayloadID": ""
+                }
+            ]
+        }
+    }
+}
