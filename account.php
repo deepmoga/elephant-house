@@ -1,10 +1,13 @@
 <?php
-require_once __DIR__ . '/includes/header.php';
+if (session_status() === PHP_SESSION_NONE) { session_start(); }
+require_once __DIR__ . '/config/database.php';
 
 if (empty($_SESSION['customer_id'])) {
     header('Location: ' . SITE_URL . '/login.php');
     exit;
 }
+
+require_once __DIR__ . '/includes/header.php';
 
 $db = getDB();
 $customerId = $_SESSION['customer_id'];

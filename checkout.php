@@ -1,8 +1,11 @@
 <?php
-require_once __DIR__ . '/includes/header.php';
+if (session_status() === PHP_SESSION_NONE) { session_start(); }
+require_once __DIR__ . '/config/database.php';
 
 $cart = $_SESSION['cart'] ?? [];
-if (empty($cart)) {
+
+// Redirect to cart if empty and not a success page
+if (empty($cart) && empty($_GET['success'])) {
     header('Location: ' . SITE_URL . '/cart.php');
     exit;
 }
@@ -11,7 +14,7 @@ $msg = '';
 $msgType = '';
 
 // Handle order submission
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['place_order'])) {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['place_order']) && !empty($cart)) {
     $name = trim($_POST['name'] ?? '');
     $email = trim($_POST['email'] ?? '');
     $phone = trim($_POST['phone'] ?? '');
@@ -61,6 +64,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['place_order'])) {
         exit;
     }
 }
+
+require_once __DIR__ . '/includes/header.php';
 
 // Success page
 if (!empty($_GET['success'])) {
@@ -119,7 +124,7 @@ if (!empty($_SESSION['customer_id'])) {
 <section class="section">
     <div class="container">
         <?php if ($msg): ?>
-        <div class="alert alert-<?php echo $msgType; ?>" style="background:<?php echo $msgType === 'danger' ? '#f8d7da' : '#d4edda'; ?>;color:<?php echo $msgType === 'danger' ? '#721c24' : '#155724'; ?>;padding:14px 20px;border-radius:8px;margin-bottom:20px;">
+        <div style="background:<?php echo $msgType === 'danger' ? '#f8d7da' : '#d4edda'; ?>;color:<?php echo $msgType === 'danger' ? '#721c24' : '#155724'; ?>;padding:14px 20px;border-radius:8px;margin-bottom:20px;">
             <i class="fas fa-exclamation-circle"></i> <?php echo htmlspecialchars($msg); ?>
         </div>
         <?php endif; ?>

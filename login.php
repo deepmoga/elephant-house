@@ -1,5 +1,6 @@
 <?php
-require_once __DIR__ . '/includes/header.php';
+if (session_status() === PHP_SESSION_NONE) { session_start(); }
+require_once __DIR__ . '/config/database.php';
 
 if (!empty($_SESSION['customer_id'])) {
     header('Location: ' . SITE_URL . '/account.php');
@@ -12,6 +13,7 @@ $redirect = $_GET['redirect'] ?? '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = trim($_POST['email'] ?? '');
     $password = $_POST['password'] ?? '';
+    $redirect = $_POST['redirect'] ?? $redirect;
 
     if (empty($email) || empty($password)) {
         $error = 'Please enter both email and password.';
@@ -33,6 +35,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 }
+
+require_once __DIR__ . '/includes/header.php';
 ?>
 
 <div class="page-header">
@@ -55,6 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <?php endif; ?>
 
             <form method="POST">
+                <input type="hidden" name="redirect" value="<?php echo htmlspecialchars($redirect); ?>">
                 <div class="form-group">
                     <label style="font-size:13px;font-weight:600;display:block;margin-bottom:5px;">Email Address</label>
                     <input type="email" name="email" class="checkout-input" required value="<?php echo htmlspecialchars($_POST['email'] ?? ''); ?>" placeholder="your@email.com">
