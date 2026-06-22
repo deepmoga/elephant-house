@@ -30,6 +30,7 @@ $images = $product['images'] ?? [];
 $isActive = !empty($product['is_active']);
 $weight = $product['weight'] ?? null;
 $weightUnit = $product['weight_unit'] ?? '';
+$cartAllowed = isCategoryCartAllowed($catId);
 ?>
 
 <div class="page-header">
@@ -95,7 +96,7 @@ $weightUnit = $product['weight_unit'] ?? '';
                 <p style="margin-bottom:8px;font-size:14px;color:var(--text-light);"><strong>Weight:</strong> <?php echo htmlspecialchars($weight . ' ' . $weightUnit); ?></p>
                 <?php endif; ?>
 
-                <?php if ($isActive): ?>
+                <?php if ($isActive && $cartAllowed): ?>
                 <div style="margin:25px 0;padding:20px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
                     <div class="quantity-selector">
                         <button type="button" class="qty-btn qty-minus">-</button>
@@ -109,6 +110,10 @@ $weightUnit = $product['weight_unit'] ?? '';
                         data-image="<?php echo htmlspecialchars($imgUrl); ?>">
                         <i class="fas fa-shopping-cart"></i> Add to Cart
                     </button>
+                </div>
+                <?php elseif ($isActive && !$cartAllowed): ?>
+                <div style="margin:25px 0;padding:15px 20px;border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--cream);border-radius:8px;">
+                    <p style="color:var(--text-light);font-size:14px;margin:0;"><i class="fas fa-store" style="margin-right:8px;color:var(--primary);"></i> This product is available in-store only. Visit us or call to order.</p>
                 </div>
                 <?php endif; ?>
 

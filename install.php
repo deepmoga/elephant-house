@@ -30,6 +30,7 @@ try {
         `description` TEXT DEFAULT NULL,
         `sort_order` INT DEFAULT 0,
         `show_in_menu` TINYINT(1) DEFAULT 0,
+        `allow_cart` TINYINT(1) DEFAULT 1,
         `is_active` TINYINT(1) DEFAULT 1,
         `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
         `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
@@ -171,6 +172,7 @@ try {
         "ALTER TABLE `parent_categories` ADD COLUMN `api_category_name` VARCHAR(200) NOT NULL DEFAULT '' AFTER `api_category_id`",
         "ALTER TABLE `parent_categories` ADD COLUMN `show_in_menu` TINYINT(1) DEFAULT 0 AFTER `sort_order`",
         "ALTER TABLE `category_mapping` ADD COLUMN `image` VARCHAR(500) DEFAULT NULL AFTER `api_category_name`",
+        "ALTER TABLE `parent_categories` ADD COLUMN `allow_cart` TINYINT(1) DEFAULT 1 AFTER `show_in_menu`",
     ];
     foreach ($migrations as $sql) {
         try { $pdo->exec($sql); } catch (PDOException $e) {}

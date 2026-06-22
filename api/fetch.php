@@ -131,6 +131,20 @@ function getSubcategoryImages($parentId) {
     return $stmt->fetchAll();
 }
 
+function isCategoryCartAllowed($apiCategoryId) {
+    if (empty($apiCategoryId)) return true;
+    $db = getDB();
+    $stmt = $db->prepare("SELECT allow_cart FROM parent_categories WHERE api_category_id = ? AND is_active = 1");
+    $stmt->execute([$apiCategoryId]);
+    $row = $stmt->fetch();
+    if ($row) return (bool)$row['allow_cart'];
+    $stmt2 = $db->prepare("SELECT pc.allow_cart FROM category_mapping cm JOIN parent_categories pc ON cm.parent_category_id = pc.id WHERE cm.api_category_id = ? AND pc.is_active = 1");
+    $stmt2->execute([$apiCategoryId]);
+    $row2 = $stmt2->fetch();
+    if ($row2) return (bool)$row2['allow_cart'];
+    return true;
+}
+
 function getProductById($id) {
     $data = apiGet('products/' . $id);
     if ($data && isset($data['data'])) {

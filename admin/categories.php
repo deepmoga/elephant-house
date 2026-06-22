@@ -17,6 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $description = trim($_POST['description'] ?? '');
         $sortOrder = intval($_POST['sort_order'] ?? 0);
         $showInMenu = isset($_POST['show_in_menu']) ? 1 : 0;
+        $allowCart = isset($_POST['allow_cart']) ? 1 : 0;
         $isActive = isset($_POST['is_active']) ? 1 : 0;
         $selectedSubs = $_POST['sub_categories'] ?? [];
         $catId = intval($_POST['cat_id'] ?? 0);
@@ -55,11 +56,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $msgType = 'danger';
                 } else {
                     if (!empty($imageName)) {
-                        $stmt = $db->prepare("INSERT INTO parent_categories (api_category_id, api_category_name, name, slug, image, description, sort_order, show_in_menu, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                        $stmt->execute([$parentApiId, $parentApiName, $name, $slug, $imageName, $description, $sortOrder, $showInMenu, $isActive]);
+                        $stmt = $db->prepare("INSERT INTO parent_categories (api_category_id, api_category_name, name, slug, image, description, sort_order, show_in_menu, allow_cart, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                        $stmt->execute([$parentApiId, $parentApiName, $name, $slug, $imageName, $description, $sortOrder, $showInMenu, $allowCart, $isActive]);
                     } else {
-                        $stmt = $db->prepare("INSERT INTO parent_categories (api_category_id, api_category_name, name, slug, description, sort_order, show_in_menu, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-                        $stmt->execute([$parentApiId, $parentApiName, $name, $slug, $description, $sortOrder, $showInMenu, $isActive]);
+                        $stmt = $db->prepare("INSERT INTO parent_categories (api_category_id, api_category_name, name, slug, description, sort_order, show_in_menu, allow_cart, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                        $stmt->execute([$parentApiId, $parentApiName, $name, $slug, $description, $sortOrder, $showInMenu, $allowCart, $isActive]);
                     }
                     $catId = $db->lastInsertId();
 
@@ -108,11 +109,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         if ($oldImg && file_exists(UPLOAD_PATH . $oldImg)) {
                             unlink(UPLOAD_PATH . $oldImg);
                         }
-                        $stmt = $db->prepare("UPDATE parent_categories SET api_category_id=?, api_category_name=?, name=?, slug=?, image=?, description=?, sort_order=?, show_in_menu=?, is_active=? WHERE id=?");
-                        $stmt->execute([$parentApiId, $parentApiName, $name, $slug, $imageName, $description, $sortOrder, $showInMenu, $isActive, $catId]);
+                        $stmt = $db->prepare("UPDATE parent_categories SET api_category_id=?, api_category_name=?, name=?, slug=?, image=?, description=?, sort_order=?, show_in_menu=?, allow_cart=?, is_active=? WHERE id=?");
+                        $stmt->execute([$parentApiId, $parentApiName, $name, $slug, $imageName, $description, $sortOrder, $showInMenu, $allowCart, $isActive, $catId]);
                     } else {
-                        $stmt = $db->prepare("UPDATE parent_categories SET api_category_id=?, api_category_name=?, name=?, slug=?, description=?, sort_order=?, show_in_menu=?, is_active=? WHERE id=?");
-                        $stmt->execute([$parentApiId, $parentApiName, $name, $slug, $description, $sortOrder, $showInMenu, $isActive, $catId]);
+                        $stmt = $db->prepare("UPDATE parent_categories SET api_category_id=?, api_category_name=?, name=?, slug=?, description=?, sort_order=?, show_in_menu=?, allow_cart=?, is_active=? WHERE id=?");
+                        $stmt->execute([$parentApiId, $parentApiName, $name, $slug, $description, $sortOrder, $showInMenu, $allowCart, $isActive, $catId]);
                     }
 
                     // Delete old subcategory images
@@ -231,6 +232,7 @@ $usedParentIds = $rows ?: [];
                             <th>Parent Category</th>
                             <th>Subcategories</th>
                             <th>Menu</th>
+                            <th>Add to Cart</th>
                             <th>Order</th>
                             <th>Status</th>
                             <th>Actions</th>
@@ -262,6 +264,13 @@ $usedParentIds = $rows ?: [];
                                 <span class="badge badge-success"><i class="fas fa-check"></i> Yes</span>
                                 <?php else: ?>
                                 <span class="badge badge-warning">No</span>
+                                <?php endif; ?>
+                            </td>
+                            <td>
+                                <?php if (!empty($c['allow_cart'])): ?>
+                                <span class="badge badge-success"><i class="fas fa-shopping-cart"></i> On</span>
+                                <?php else: ?>
+                                <span class="badge badge-danger"><i class="fas fa-ban"></i> Off</span>
                                 <?php endif; ?>
                             </td>
                             <td><?php echo $c['sort_order']; ?></td>
@@ -378,7 +387,7 @@ $usedParentIds = $rows ?: [];
                             </div>
                         </div>
 
-                        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;">
+                        <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:20px;">
                             <div class="form-group">
                                 <label>Sort Order</label>
                                 <input type="number" name="sort_order" class="form-control" value="<?php echo $editData['sort_order'] ?? 0; ?>">
@@ -388,6 +397,13 @@ $usedParentIds = $rows ?: [];
                                 <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
                                     <input type="checkbox" name="show_in_menu" value="1" <?php echo ($editData['show_in_menu'] ?? 0) ? 'checked' : ''; ?> style="accent-color:var(--admin-primary);width:18px;height:18px;">
                                     <strong>Show in Menu</strong>
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label>&nbsp;</label>
+                                <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+                                    <input type="checkbox" name="allow_cart" value="1" <?php echo ($editData['allow_cart'] ?? 1) ? 'checked' : ''; ?> style="accent-color:#28a745;width:18px;height:18px;">
+                                    <strong>Allow Add to Cart</strong>
                                 </label>
                             </div>
                             <div class="form-group">
