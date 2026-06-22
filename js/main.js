@@ -4,7 +4,8 @@ document.addEventListener('DOMContentLoaded', function () {
     var siteUrl = '';
     var metaBase = document.querySelector('link[rel="stylesheet"][href*="/css/style.css"]');
     if (metaBase) {
-        siteUrl = metaBase.href.replace('/css/style.css', '');
+        var href = metaBase.getAttribute('href');
+        siteUrl = href.split('/css/style.css')[0];
     }
 
     // ---- Mobile Nav Toggle ----
@@ -93,124 +94,119 @@ document.addEventListener('DOMContentLoaded', function () {
     // ---- Show Toast Notification ----
     function showToast(message, type) {
         var toast = document.createElement('div');
-        toast.className = 'toast-notification';
-        toast.style.cssText = 'position:fixed;top:20px;right:20px;padding:15px 25px;border-radius:10px;color:#fff;font-size:14px;font-weight:600;z-index:9999;animation:slideUp 0.4s ease;box-shadow:0 5px 20px rgba(0,0,0,0.2);';
+        toast.style.cssText = 'position:fixed;top:20px;right:20px;padding:15px 25px;border-radius:10px;color:#fff;font-size:14px;font-weight:600;z-index:9999;box-shadow:0 5px 20px rgba(0,0,0,0.2);transition:opacity 0.4s;';
         toast.style.background = type === 'success' ? '#28a745' : '#dc3545';
         toast.innerHTML = '<i class="fas fa-' + (type === 'success' ? 'check-circle' : 'exclamation-circle') + '" style="margin-right:8px;"></i>' + message;
         document.body.appendChild(toast);
         setTimeout(function() {
             toast.style.opacity = '0';
-            toast.style.transition = 'opacity 0.4s';
             setTimeout(function() { toast.remove(); }, 400);
         }, 3000);
     }
 
-    // ---- Add to Cart ----
-    document.querySelectorAll('.btn-add-cart').forEach(function(btn) {
-        if (!btn.dataset.id) return;
-        btn.addEventListener('click', function(e) {
-            e.preventDefault();
-            var qtyInput = document.getElementById('productQty');
-            var qty = qtyInput ? parseInt(qtyInput.value) || 1 : 1;
-
-            var formData = new FormData();
-            formData.append('action', 'add');
-            formData.append('product_id', this.dataset.id);
-            formData.append('name', this.dataset.name);
-            formData.append('image', this.dataset.image);
-            formData.append('price', this.dataset.price);
-            formData.append('quantity', qty);
-
-            fetch(siteUrl + '/api/cart.php', { method: 'POST', body: formData })
-                .then(function(r) { return r.json(); })
-                .then(function(data) {
-                    if (data.success) {
-                        updateCartBadge(data.cart_count);
-                        showToast(data.message, 'success');
-                    } else {
-                        showToast(data.message, 'error');
-                    }
-                })
-                .catch(function() { showToast('Error adding to cart', 'error'); });
-        });
-    });
-
-    // ---- Quantity Selectors (Product Page) ----
-    document.querySelectorAll('.qty-minus').forEach(function(btn) {
-        btn.addEventListener('click', function() {
-            var input = this.parentElement.querySelector('.qty-input');
-            if (input && parseInt(input.value) > 1) input.value = parseInt(input.value) - 1;
-        });
-    });
-    document.querySelectorAll('.qty-plus').forEach(function(btn) {
-        btn.addEventListener('click', function() {
-            var input = this.parentElement.querySelector('.qty-input');
-            if (input && parseInt(input.value) < 99) input.value = parseInt(input.value) + 1;
-        });
-    });
-
-    // ---- Cart Page: Quantity Update ----
-    document.querySelectorAll('.cart-qty-minus').forEach(function(btn) {
-        btn.addEventListener('click', function() {
-            var id = this.dataset.id;
-            var input = document.querySelector('.cart-qty-input[data-id="' + id + '"]');
-            var val = parseInt(input.value) - 1;
-            if (val < 1) val = 1;
-            input.value = val;
-            updateCartItem(id, val);
-        });
-    });
-
-    document.querySelectorAll('.cart-qty-plus').forEach(function(btn) {
-        btn.addEventListener('click', function() {
-            var id = this.dataset.id;
-            var input = document.querySelector('.cart-qty-input[data-id="' + id + '"]');
-            var val = parseInt(input.value) + 1;
-            input.value = val;
-            updateCartItem(id, val);
-        });
-    });
-
-    function updateCartItem(productId, quantity) {
+    // ---- AJAX helper ----
+    function cartAjax(data, callback) {
         var formData = new FormData();
-        formData.append('action', 'update');
-        formData.append('product_id', productId);
-        formData.append('quantity', quantity);
-
+        for (var key in data) {
+            formData.append(key, data[key]);
+        }
         fetch(siteUrl + '/api/cart.php', { method: 'POST', body: formData })
             .then(function(r) { return r.json(); })
-            .then(function(data) {
-                if (data.success) {
-                    updateCartBadge(data.cart_count);
-                    location.reload();
-                }
+            .then(function(json) { callback(json); })
+            .catch(function(err) {
+                console.error('Cart error:', err);
+                showToast('Something went wrong. Please try again.', 'error');
             });
     }
 
-    // ---- Cart Page: Remove Item ----
-    document.querySelectorAll('.cart-remove').forEach(function(btn) {
-        btn.addEventListener('click', function() {
-            var id = this.dataset.id;
-            var formData = new FormData();
-            formData.append('action', 'remove');
-            formData.append('product_id', id);
+    // ---- Add to Cart (product page) ----
+    document.addEventListener('click', function(e) {
+        var btn = e.target.closest('.btn-add-cart[data-id]');
+        if (!btn) return;
+        e.preventDefault();
 
-            fetch(siteUrl + '/api/cart.php', { method: 'POST', body: formData })
-                .then(function(r) { return r.json(); })
-                .then(function(data) {
-                    if (data.success) {
-                        updateCartBadge(data.cart_count);
-                        var row = document.querySelector('.cart-row[data-id="' + id + '"]');
-                        if (row) row.remove();
-                        if (data.cart_count === 0) location.reload();
-                        else {
-                            var subtotalEl = document.getElementById('cartSubtotal');
-                            var totalEl = document.getElementById('cartTotal');
-                            if (subtotalEl) subtotalEl.innerHTML = '<strong>$' + data.cart_total + '</strong>';
-                            if (totalEl) totalEl.textContent = '$' + data.cart_total;
-                        }
-                    }
-                });
+        var qtyInput = document.getElementById('productQty');
+        var qty = qtyInput ? parseInt(qtyInput.value) || 1 : 1;
+
+        cartAjax({
+            action: 'add',
+            product_id: btn.dataset.id,
+            name: btn.dataset.name,
+            image: btn.dataset.image,
+            price: btn.dataset.price,
+            quantity: qty
+        }, function(data) {
+            if (data.success) {
+                updateCartBadge(data.cart_count);
+                showToast(data.message, 'success');
+            } else {
+                showToast(data.message || 'Error adding to cart', 'error');
+            }
+        });
+    });
+
+    // ---- Product page quantity +/- ----
+    document.addEventListener('click', function(e) {
+        var minusBtn = e.target.closest('.qty-minus');
+        var plusBtn = e.target.closest('.qty-plus');
+
+        if (minusBtn) {
+            var input = minusBtn.parentElement.querySelector('.qty-input');
+            if (input && parseInt(input.value) > 1) input.value = parseInt(input.value) - 1;
+        }
+        if (plusBtn) {
+            var input2 = plusBtn.parentElement.querySelector('.qty-input');
+            if (input2 && parseInt(input2.value) < 99) input2.value = parseInt(input2.value) + 1;
+        }
+    });
+
+    // ---- Cart page: quantity update ----
+    document.addEventListener('click', function(e) {
+        var minusBtn = e.target.closest('.cart-qty-minus');
+        var plusBtn = e.target.closest('.cart-qty-plus');
+        var id, input, val;
+
+        if (minusBtn) {
+            id = minusBtn.dataset.id;
+            input = document.querySelector('.cart-qty-input[data-id="' + id + '"]');
+            val = Math.max(1, parseInt(input.value) - 1);
+            input.value = val;
+            cartAjax({ action: 'update', product_id: id, quantity: val }, function(data) {
+                if (data.success) { updateCartBadge(data.cart_count); location.reload(); }
+            });
+        }
+
+        if (plusBtn) {
+            id = plusBtn.dataset.id;
+            input = document.querySelector('.cart-qty-input[data-id="' + id + '"]');
+            val = parseInt(input.value) + 1;
+            input.value = val;
+            cartAjax({ action: 'update', product_id: id, quantity: val }, function(data) {
+                if (data.success) { updateCartBadge(data.cart_count); location.reload(); }
+            });
+        }
+    });
+
+    // ---- Cart page: remove item ----
+    document.addEventListener('click', function(e) {
+        var removeBtn = e.target.closest('.cart-remove');
+        if (!removeBtn) return;
+
+        var id = removeBtn.dataset.id;
+        cartAjax({ action: 'remove', product_id: id }, function(data) {
+            if (data.success) {
+                updateCartBadge(data.cart_count);
+                var row = document.querySelector('.cart-row[data-id="' + id + '"]');
+                if (row) row.remove();
+                if (data.cart_count === 0) {
+                    location.reload();
+                } else {
+                    var subtotalEl = document.getElementById('cartSubtotal');
+                    var totalEl = document.getElementById('cartTotal');
+                    if (subtotalEl) subtotalEl.innerHTML = '<strong>$' + data.cart_total + '</strong>';
+                    if (totalEl) totalEl.textContent = '$' + data.cart_total;
+                }
+            }
         });
     });
 });
