@@ -81,6 +81,29 @@ if ($action === 'view') {
             <p><strong>Notes:</strong> <?php echo htmlspecialchars($order['notes']); ?></p>
             <?php endif; ?>
             <p><strong>Date:</strong> <?php echo date('d M Y H:i', strtotime($order['created_at'])); ?></p>
+            <hr style="margin:15px 0;border:none;border-top:1px solid var(--admin-border);">
+            <p><strong>Shipping:</strong>
+                <?php if (($order['shipping_method'] ?? 'delivery') === 'pickup'): ?>
+                <span class="badge badge-success"><i class="fas fa-store"></i> Pickup from Store</span>
+                <?php else: ?>
+                <span class="badge badge-warning"><i class="fas fa-truck"></i> Delivery ($<?php echo number_format($order['shipping_cost'] ?? 0, 2); ?>)</span>
+                <?php endif; ?>
+            </p>
+            <p><strong>Payment:</strong>
+                <?php if (($order['payment_method'] ?? 'cod') === 'paypal'): ?>
+                <span class="badge badge-success"><i class="fab fa-paypal"></i> PayPal</span>
+                <?php else: ?>
+                <span class="badge badge-warning">Pay Later / COD</span>
+                <?php endif; ?>
+            </p>
+            <?php if (!empty($order['payment_status'])): ?>
+            <p><strong>Payment Status:</strong>
+                <span class="badge badge-<?php echo ($order['payment_status'] ?? '') === 'paid' ? 'success' : 'warning'; ?>"><?php echo ucfirst($order['payment_status'] ?? 'pending'); ?></span>
+            </p>
+            <?php endif; ?>
+            <?php if (!empty($order['payment_transaction_id'])): ?>
+            <p><strong>Transaction ID:</strong> <code style="font-size:12px;"><?php echo htmlspecialchars($order['payment_transaction_id']); ?></code></p>
+            <?php endif; ?>
         </div>
     </div>
     <div class="card">
@@ -100,6 +123,9 @@ if ($action === 'view') {
             </form>
             <hr style="margin:20px 0;">
             <p><strong>Subtotal:</strong> $<?php echo number_format($order['subtotal'], 2); ?></p>
+            <?php if (($order['shipping_cost'] ?? 0) > 0): ?>
+            <p><strong>Shipping:</strong> $<?php echo number_format($order['shipping_cost'], 2); ?></p>
+            <?php endif; ?>
             <?php if ($order['discount'] > 0): ?>
             <p><strong>Discount:</strong> -$<?php echo number_format($order['discount'], 2); ?> (<?php echo htmlspecialchars($order['coupon_code']); ?>)</p>
             <?php endif; ?>

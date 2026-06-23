@@ -9,7 +9,8 @@ $msgType = '';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $fields = [
         'site_name', 'site_tagline', 'phone', 'email', 'address',
-        'facebook', 'instagram', 'opening_hours', 'footer_text', 'google_maps'
+        'facebook', 'instagram', 'opening_hours', 'footer_text', 'google_maps',
+        'paypal_username', 'paypal_password', 'paypal_signature', 'paypal_mode', 'paypal_enabled'
     ];
 
     $stmt = $db->prepare("INSERT INTO site_settings (setting_key, setting_value) VALUES (?, ?) ON DUPLICATE KEY UPDATE setting_value = VALUES(setting_value)");
@@ -149,6 +150,42 @@ $s = getAllSettings();
                 <label>Footer Copyright Text</label>
                 <input type="text" name="footer_text" class="form-control" value="<?php echo htmlspecialchars($s['footer_text'] ?? ''); ?>">
             </div>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header"><h2><i class="fab fa-paypal"></i> PayPal Payment Gateway</h2></div>
+        <div class="card-body">
+            <div class="form-group">
+                <label style="display:flex;align-items:center;gap:8px;cursor:pointer;margin-bottom:15px;">
+                    <input type="checkbox" name="paypal_enabled" value="1" <?php echo ($s['paypal_enabled'] ?? '0') === '1' ? 'checked' : ''; ?> style="accent-color:var(--admin-primary);width:20px;height:20px;">
+                    <strong style="font-size:15px;">Enable PayPal Payments</strong>
+                </label>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+                <div class="form-group">
+                    <label>API Username</label>
+                    <input type="text" name="paypal_username" class="form-control" value="<?php echo htmlspecialchars($s['paypal_username'] ?? ''); ?>" placeholder="username_api1.example.com">
+                </div>
+                <div class="form-group">
+                    <label>API Password</label>
+                    <input type="password" name="paypal_password" class="form-control" value="<?php echo htmlspecialchars($s['paypal_password'] ?? ''); ?>">
+                </div>
+            </div>
+            <div style="display:grid;grid-template-columns:2fr 1fr;gap:20px;">
+                <div class="form-group">
+                    <label>API Signature</label>
+                    <input type="text" name="paypal_signature" class="form-control" value="<?php echo htmlspecialchars($s['paypal_signature'] ?? ''); ?>">
+                </div>
+                <div class="form-group">
+                    <label>Mode</label>
+                    <select name="paypal_mode" class="form-control">
+                        <option value="sandbox" <?php echo ($s['paypal_mode'] ?? '') === 'sandbox' ? 'selected' : ''; ?>>Sandbox (Testing)</option>
+                        <option value="live" <?php echo ($s['paypal_mode'] ?? '') === 'live' ? 'selected' : ''; ?>>Live (Production)</option>
+                    </select>
+                </div>
+            </div>
+            <p class="form-hint"><i class="fas fa-info-circle"></i> Get your API credentials from PayPal Developer Dashboard. Use Sandbox mode for testing.</p>
         </div>
     </div>
 

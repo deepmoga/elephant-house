@@ -49,6 +49,9 @@ $currentAdminPage = basename($_SERVER['PHP_SELF'], '.php');
             <a href="<?php echo SITE_URL; ?>/admin/coupons.php" class="<?php echo $currentAdminPage === 'coupons' ? 'active' : ''; ?>">
                 <i class="fas fa-ticket-alt"></i> Coupons
             </a>
+            <a href="<?php echo SITE_URL; ?>/admin/shipping.php" class="<?php echo $currentAdminPage === 'shipping' ? 'active' : ''; ?>">
+                <i class="fas fa-truck"></i> Shipping Rates
+            </a>
 
             <div class="nav-section">Content</div>
             <a href="<?php echo SITE_URL; ?>/admin/pages.php" class="<?php echo $currentAdminPage === 'pages' ? 'active' : ''; ?>">

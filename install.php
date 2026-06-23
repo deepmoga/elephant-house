@@ -166,6 +166,16 @@ try {
         `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     ) ENGINE=InnoDB");
 
+    $pdo->exec("CREATE TABLE IF NOT EXISTS `shipping_rates` (
+        `id` INT AUTO_INCREMENT PRIMARY KEY,
+        `state` VARCHAR(100) NOT NULL,
+        `postcode_from` VARCHAR(10) NOT NULL,
+        `postcode_to` VARCHAR(10) NOT NULL,
+        `price` DECIMAL(10,2) NOT NULL,
+        `is_active` TINYINT(1) DEFAULT 1,
+        `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    ) ENGINE=InnoDB");
+
     // Migrations for existing installs
     $migrations = [
         "ALTER TABLE `parent_categories` ADD COLUMN `api_category_id` VARCHAR(100) NOT NULL DEFAULT '' AFTER `id`",
@@ -173,10 +183,47 @@ try {
         "ALTER TABLE `parent_categories` ADD COLUMN `show_in_menu` TINYINT(1) DEFAULT 0 AFTER `sort_order`",
         "ALTER TABLE `category_mapping` ADD COLUMN `image` VARCHAR(500) DEFAULT NULL AFTER `api_category_name`",
         "ALTER TABLE `parent_categories` ADD COLUMN `allow_cart` TINYINT(1) DEFAULT 1 AFTER `show_in_menu`",
+        "ALTER TABLE `orders` ADD COLUMN `payment_method` VARCHAR(20) NOT NULL DEFAULT 'cod' AFTER `status`",
+        "ALTER TABLE `orders` ADD COLUMN `payment_status` VARCHAR(20) NOT NULL DEFAULT 'pending' AFTER `payment_method`",
+        "ALTER TABLE `orders` ADD COLUMN `payment_transaction_id` VARCHAR(100) DEFAULT NULL AFTER `payment_status`",
+        "ALTER TABLE `orders` ADD COLUMN `shipping_method` VARCHAR(20) NOT NULL DEFAULT 'delivery' AFTER `payment_transaction_id`",
+        "ALTER TABLE `orders` ADD COLUMN `shipping_cost` DECIMAL(10,2) NOT NULL DEFAULT 0.00 AFTER `shipping_method`",
     ];
     foreach ($migrations as $sql) {
         try { $pdo->exec($sql); } catch (PDOException $e) {}
     }
+
+    // Default shipping rates
+    $shippingCheck = $pdo->query("SELECT COUNT(*) FROM shipping_rates")->fetchColumn();
+    if ($shippingCheck == 0) {
+        $rates = [
+            ['Victoria','3570','3899',25],['Victoria','3550','3569',40],['Victoria','3900','3999',40],
+            ['Queensland','4551','4575',45],['Queensland','4825','4825',45],
+            ['New South Wales','2500','2599',40],['New South Wales','2250','2275',40],
+            ['New South Wales','2300','2308',30],['New South Wales','2444','2444',35],
+            ['New South Wales','2450','2450',35],['New South Wales','2700','2999',38],
+            ['New South Wales','2340','2340',45],['New South Wales','2450','2490',35],
+            ['Queensland','4350','4350',40],['Queensland','4680','4680',45],
+            ['Queensland','4560','4560',35],['Queensland','4655','4655',35],
+            ['Queensland','4670','4670',35],['Queensland','4207','4227',35],
+            ['Queensland','4700','4700',40],['Queensland','4740','4741',30],
+            ['Queensland','4810','4810',25],['Queensland','4870','4870',20],
+            ['Western Australia','6000','6797',35],['Northern Territory','800','899',70],
+            ['Tasmania','7000','7799',35],['South Australia','5000','5799',28],
+            ['Victoria','3000','3549',25],['New South Wales','2000','2249',28],
+            ['Australian Capital Territory','2600','2920',25],['Queensland','4000','4076',30],
+        ];
+        $stmtRate = $pdo->prepare("INSERT INTO shipping_rates (state, postcode_from, postcode_to, price) VALUES (?, ?, ?, ?)");
+        foreach ($rates as $r) { $stmtRate->execute($r); }
+    }
+
+    // Default PayPal settings
+    $paypalDefaults = [
+        'paypal_username' => '', 'paypal_password' => '', 'paypal_signature' => '',
+        'paypal_mode' => 'sandbox', 'paypal_enabled' => '0',
+    ];
+    $stmtSetting = $pdo->prepare("INSERT IGNORE INTO site_settings (setting_key, setting_value) VALUES (?, ?)");
+    foreach ($paypalDefaults as $k => $v) { $stmtSetting->execute([$k, $v]); }
 
     // Insert default admin
     $hash = password_hash('admin123', PASSWORD_DEFAULT);
