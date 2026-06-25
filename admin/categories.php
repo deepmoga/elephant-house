@@ -18,6 +18,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $sortOrder = intval($_POST['sort_order'] ?? 0);
         $showInMenu = isset($_POST['show_in_menu']) ? 1 : 0;
         $allowCart = isset($_POST['allow_cart']) ? 1 : 0;
+        $priceMarkup = floatval($_POST['price_markup'] ?? 0);
+        $priceMarkupType = $_POST['price_markup_type'] ?? 'fixed';
+        $isFeatured = isset($_POST['is_featured']) ? 1 : 0;
         $isActive = isset($_POST['is_active']) ? 1 : 0;
         $selectedSubs = $_POST['sub_categories'] ?? [];
         $catId = intval($_POST['cat_id'] ?? 0);
@@ -56,11 +59,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $msgType = 'danger';
                 } else {
                     if (!empty($imageName)) {
-                        $stmt = $db->prepare("INSERT INTO parent_categories (api_category_id, api_category_name, name, slug, image, description, sort_order, show_in_menu, allow_cart, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                        $stmt->execute([$parentApiId, $parentApiName, $name, $slug, $imageName, $description, $sortOrder, $showInMenu, $allowCart, $isActive]);
+                        $stmt = $db->prepare("INSERT INTO parent_categories (api_category_id, api_category_name, name, slug, image, description, sort_order, show_in_menu, allow_cart, price_markup, price_markup_type, is_featured, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                        $stmt->execute([$parentApiId, $parentApiName, $name, $slug, $imageName, $description, $sortOrder, $showInMenu, $allowCart, $priceMarkup, $priceMarkupType, $isFeatured, $isActive]);
                     } else {
-                        $stmt = $db->prepare("INSERT INTO parent_categories (api_category_id, api_category_name, name, slug, description, sort_order, show_in_menu, allow_cart, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)");
-                        $stmt->execute([$parentApiId, $parentApiName, $name, $slug, $description, $sortOrder, $showInMenu, $allowCart, $isActive]);
+                        $stmt = $db->prepare("INSERT INTO parent_categories (api_category_id, api_category_name, name, slug, description, sort_order, show_in_menu, allow_cart, price_markup, price_markup_type, is_featured, is_active) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+                        $stmt->execute([$parentApiId, $parentApiName, $name, $slug, $description, $sortOrder, $showInMenu, $allowCart, $priceMarkup, $priceMarkupType, $isFeatured, $isActive]);
                     }
                     $catId = $db->lastInsertId();
 
@@ -109,11 +112,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         if ($oldImg && file_exists(UPLOAD_PATH . $oldImg)) {
                             unlink(UPLOAD_PATH . $oldImg);
                         }
-                        $stmt = $db->prepare("UPDATE parent_categories SET api_category_id=?, api_category_name=?, name=?, slug=?, image=?, description=?, sort_order=?, show_in_menu=?, allow_cart=?, is_active=? WHERE id=?");
-                        $stmt->execute([$parentApiId, $parentApiName, $name, $slug, $imageName, $description, $sortOrder, $showInMenu, $allowCart, $isActive, $catId]);
+                        $stmt = $db->prepare("UPDATE parent_categories SET api_category_id=?, api_category_name=?, name=?, slug=?, image=?, description=?, sort_order=?, show_in_menu=?, allow_cart=?, price_markup=?, price_markup_type=?, is_featured=?, is_active=? WHERE id=?");
+                        $stmt->execute([$parentApiId, $parentApiName, $name, $slug, $imageName, $description, $sortOrder, $showInMenu, $allowCart, $priceMarkup, $priceMarkupType, $isFeatured, $isActive, $catId]);
                     } else {
-                        $stmt = $db->prepare("UPDATE parent_categories SET api_category_id=?, api_category_name=?, name=?, slug=?, description=?, sort_order=?, show_in_menu=?, allow_cart=?, is_active=? WHERE id=?");
-                        $stmt->execute([$parentApiId, $parentApiName, $name, $slug, $description, $sortOrder, $showInMenu, $allowCart, $isActive, $catId]);
+                        $stmt = $db->prepare("UPDATE parent_categories SET api_category_id=?, api_category_name=?, name=?, slug=?, description=?, sort_order=?, show_in_menu=?, allow_cart=?, price_markup=?, price_markup_type=?, is_featured=?, is_active=? WHERE id=?");
+                        $stmt->execute([$parentApiId, $parentApiName, $name, $slug, $description, $sortOrder, $showInMenu, $allowCart, $priceMarkup, $priceMarkupType, $isFeatured, $isActive, $catId]);
                     }
 
                     // Delete old subcategory images
@@ -232,7 +235,9 @@ $usedParentIds = $rows ?: [];
                             <th>Parent Category</th>
                             <th>Subcategories</th>
                             <th>Menu</th>
-                            <th>Add to Cart</th>
+                            <th>Cart</th>
+                            <th>Markup</th>
+                            <th>Featured</th>
                             <th>Order</th>
                             <th>Status</th>
                             <th>Actions</th>
@@ -268,9 +273,23 @@ $usedParentIds = $rows ?: [];
                             </td>
                             <td>
                                 <?php if (!empty($c['allow_cart'])): ?>
-                                <span class="badge badge-success"><i class="fas fa-shopping-cart"></i> On</span>
+                                <span class="badge badge-success">On</span>
                                 <?php else: ?>
-                                <span class="badge badge-danger"><i class="fas fa-ban"></i> Off</span>
+                                <span class="badge badge-danger">Off</span>
+                                <?php endif; ?>
+                            </td>
+                            <td>
+                                <?php if (($c['price_markup'] ?? 0) > 0): ?>
+                                <span class="badge badge-warning"><?php echo $c['price_markup_type'] === 'percentage' ? $c['price_markup'] . '%' : '$' . number_format($c['price_markup'], 2); ?></span>
+                                <?php else: ?>
+                                <span style="color:var(--admin-text-light);">-</span>
+                                <?php endif; ?>
+                            </td>
+                            <td>
+                                <?php if (!empty($c['is_featured'])): ?>
+                                <span class="badge badge-success"><i class="fas fa-star"></i></span>
+                                <?php else: ?>
+                                <span style="color:var(--admin-text-light);">-</span>
                                 <?php endif; ?>
                             </td>
                             <td><?php echo $c['sort_order']; ?></td>
@@ -387,32 +406,41 @@ $usedParentIds = $rows ?: [];
                             </div>
                         </div>
 
-                        <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:20px;">
+                        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;">
                             <div class="form-group">
                                 <label>Sort Order</label>
                                 <input type="number" name="sort_order" class="form-control" value="<?php echo $editData['sort_order'] ?? 0; ?>">
                             </div>
                             <div class="form-group">
-                                <label>&nbsp;</label>
-                                <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
-                                    <input type="checkbox" name="show_in_menu" value="1" <?php echo ($editData['show_in_menu'] ?? 0) ? 'checked' : ''; ?> style="accent-color:var(--admin-primary);width:18px;height:18px;">
-                                    <strong>Show in Menu</strong>
-                                </label>
+                                <label>Price Markup Amount</label>
+                                <input type="number" name="price_markup" class="form-control" step="0.01" min="0" value="<?php echo $editData['price_markup'] ?? 0; ?>" placeholder="0.00">
+                                <p class="form-hint">Extra amount added to all products in this category</p>
                             </div>
                             <div class="form-group">
-                                <label>&nbsp;</label>
-                                <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
-                                    <input type="checkbox" name="allow_cart" value="1" <?php echo ($editData['allow_cart'] ?? 1) ? 'checked' : ''; ?> style="accent-color:#28a745;width:18px;height:18px;">
-                                    <strong>Allow Add to Cart</strong>
-                                </label>
+                                <label>Markup Type</label>
+                                <select name="price_markup_type" class="form-control">
+                                    <option value="fixed" <?php echo ($editData['price_markup_type'] ?? 'fixed') === 'fixed' ? 'selected' : ''; ?>>Fixed ($)</option>
+                                    <option value="percentage" <?php echo ($editData['price_markup_type'] ?? '') === 'percentage' ? 'selected' : ''; ?>>Percentage (%)</option>
+                                </select>
                             </div>
-                            <div class="form-group">
-                                <label>&nbsp;</label>
-                                <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
-                                    <input type="checkbox" name="is_active" value="1" <?php echo ($editData['is_active'] ?? 1) ? 'checked' : ''; ?> style="accent-color:var(--admin-primary);width:18px;height:18px;">
-                                    Active
-                                </label>
-                            </div>
+                        </div>
+                        <div style="display:flex;gap:30px;flex-wrap:wrap;margin-top:10px;">
+                            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+                                <input type="checkbox" name="show_in_menu" value="1" <?php echo ($editData['show_in_menu'] ?? 0) ? 'checked' : ''; ?> style="accent-color:var(--admin-primary);width:18px;height:18px;">
+                                <strong>Show in Menu</strong>
+                            </label>
+                            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+                                <input type="checkbox" name="allow_cart" value="1" <?php echo ($editData['allow_cart'] ?? 1) ? 'checked' : ''; ?> style="accent-color:#28a745;width:18px;height:18px;">
+                                <strong>Allow Add to Cart</strong>
+                            </label>
+                            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+                                <input type="checkbox" name="is_featured" value="1" <?php echo ($editData['is_featured'] ?? 0) ? 'checked' : ''; ?> style="accent-color:#D4A843;width:18px;height:18px;">
+                                <strong><i class="fas fa-star" style="color:#D4A843;"></i> Featured on Homepage</strong>
+                            </label>
+                            <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+                                <input type="checkbox" name="is_active" value="1" <?php echo ($editData['is_active'] ?? 1) ? 'checked' : ''; ?> style="accent-color:var(--admin-primary);width:18px;height:18px;">
+                                Active
+                            </label>
                         </div>
                     </div>
                 </div>

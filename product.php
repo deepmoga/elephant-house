@@ -19,11 +19,12 @@ if (!$product) {
     exit;
 }
 
-$price = $product['price_including_tax'] ?? 0;
+$rawPrice = $product['price_including_tax'] ?? 0;
+$catId = $product['product_type_id'] ?? '';
+$price = applyPriceMarkup($rawPrice, $catId);
 $imgUrl = $product['image_url'] ?? '';
 $brand = $product['brand']['name'] ?? '';
 $catName = $product['product_category']['name'] ?? '';
-$catId = $product['product_type_id'] ?? '';
 $description = $product['description'] ?? '';
 $sku = $product['sku'] ?? '';
 $images = $product['images'] ?? [];

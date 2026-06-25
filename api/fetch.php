@@ -131,6 +131,33 @@ function getSubcategoryImages($parentId) {
     return $stmt->fetchAll();
 }
 
+function getCategoryPriceMarkup($apiCategoryId) {
+    if (empty($apiCategoryId)) return ['amount' => 0, 'type' => 'fixed'];
+    $db = getDB();
+    $stmt = $db->prepare("SELECT price_markup, price_markup_type FROM parent_categories WHERE api_category_id = ? AND is_active = 1");
+    $stmt->execute([$apiCategoryId]);
+    $row = $stmt->fetch();
+    if ($row && $row['price_markup'] > 0) return ['amount' => floatval($row['price_markup']), 'type' => $row['price_markup_type']];
+    $stmt2 = $db->prepare("SELECT pc.price_markup, pc.price_markup_type FROM category_mapping cm JOIN parent_categories pc ON cm.parent_category_id = pc.id WHERE cm.api_category_id = ? AND pc.is_active = 1");
+    $stmt2->execute([$apiCategoryId]);
+    $row2 = $stmt2->fetch();
+    if ($row2 && $row2['price_markup'] > 0) return ['amount' => floatval($row2['price_markup']), 'type' => $row2['price_markup_type']];
+    return ['amount' => 0, 'type' => 'fixed'];
+}
+
+function applyPriceMarkup($price, $apiCategoryId) {
+    $markup = getCategoryPriceMarkup($apiCategoryId);
+    if ($markup['amount'] <= 0) return $price;
+    if ($markup['type'] === 'percentage') return $price + ($price * $markup['amount'] / 100);
+    return $price + $markup['amount'];
+}
+
+function getFeaturedCategories() {
+    $db = getDB();
+    $stmt = $db->query("SELECT * FROM parent_categories WHERE is_active = 1 AND is_featured = 1 ORDER BY sort_order ASC");
+    return $stmt->fetchAll();
+}
+
 function isCategoryCartAllowed($apiCategoryId) {
     if (empty($apiCategoryId)) return true;
     $db = getDB();
