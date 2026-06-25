@@ -281,51 +281,55 @@ $firstFeaturedId = !empty($featuredCats) ? $featuredCats[0]['api_category_id'] :
 
 <!-- AJAX for Featured Products -->
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    var siteUrl = '';
-    var metaBase = document.querySelector('link[rel="stylesheet"][href*="/css/style.css"]');
-    if (metaBase) siteUrl = metaBase.getAttribute('href').split('/css/style.css')[0];
+var _featSiteUrl = '';
+(function() {
+    var m = document.querySelector('link[rel="stylesheet"][href*="/css/style.css"]');
+    if (m) _featSiteUrl = m.getAttribute('href').split('/css/style.css')[0];
+})();
 
+function loadFeaturedProducts(btn) {
+    if (!btn || !btn.dataset || !btn.dataset.category) return;
+    var catId = btn.dataset.category;
+
+    document.querySelectorAll('.featured-tab').forEach(function(t) { t.classList.remove('active'); });
+    btn.classList.add('active');
+
+    var grid = document.getElementById('featuredProductsGrid');
+    if (!grid) return;
+    grid.innerHTML = '<div class="loading-spinner"></div>';
+
+    var link = document.getElementById('featuredViewAllLink');
+    if (link) link.href = _featSiteUrl + '/products.php?category=' + encodeURIComponent(catId);
+
+    fetch(_featSiteUrl + '/api/home-products.php?category_id=' + encodeURIComponent(catId) + '&limit=8')
+        .then(function(r) { return r.json(); })
+        .then(function(data) {
+            if (!data.success || data.products.length === 0) {
+                grid.innerHTML = '<p style="text-align:center;padding:40px;color:var(--text-muted);grid-column:1/-1;">No products found in this category.</p>';
+                return;
+            }
+            var html = '';
+            data.products.forEach(function(p) {
+                html += '<a href="' + _featSiteUrl + '/product.php?id=' + encodeURIComponent(p.id) + '" class="product-card">' +
+                    '<div class="product-img">' +
+                    (p.image ? '<img src="' + p.image.replace(/"/g, '&quot;') + '" alt="" loading="lazy">' : '<div class="no-img"><i class="fas fa-image"></i></div>') +
+                    '</div>' +
+                    '<div class="product-info">' +
+                    (p.brand ? '<span class="product-brand">' + p.brand.replace(/</g, '&lt;') + '</span>' : '') +
+                    '<h3>' + p.name.replace(/</g, '&lt;') + '</h3>' +
+                    '<div class="product-price"><span class="price">$' + p.price + '</span></div>' +
+                    '</div></a>';
+            });
+            grid.innerHTML = html;
+        })
+        .catch(function() {
+            grid.innerHTML = '<p style="text-align:center;padding:40px;color:var(--text-muted);grid-column:1/-1;">Error loading products.</p>';
+        });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
     var firstTab = document.querySelector('.featured-tab[data-category]');
     if (firstTab) loadFeaturedProducts(firstTab);
-
-    window.loadFeaturedProducts = function(btn) {
-        if (!btn.dataset.category) return;
-        var catId = btn.dataset.category;
-        document.querySelectorAll('.featured-tab').forEach(function(t) { t.classList.remove('active'); });
-        btn.classList.add('active');
-
-        var grid = document.getElementById('featuredProductsGrid');
-        grid.innerHTML = '<div class="loading-spinner"></div>';
-
-        var link = document.getElementById('featuredViewAllLink');
-        if (link) link.href = siteUrl + '/products.php?category=' + encodeURIComponent(catId);
-
-        fetch(siteUrl + '/api/home-products.php?category_id=' + encodeURIComponent(catId) + '&limit=8')
-            .then(function(r) { return r.json(); })
-            .then(function(data) {
-                if (!data.success || data.products.length === 0) {
-                    grid.innerHTML = '<p style="text-align:center;padding:40px;color:var(--text-muted);grid-column:1/-1;">No products found in this category.</p>';
-                    return;
-                }
-                var html = '';
-                data.products.forEach(function(p) {
-                    html += '<a href="' + siteUrl + '/product.php?id=' + encodeURIComponent(p.id) + '" class="product-card">' +
-                        '<div class="product-img">' +
-                        (p.image ? '<img src="' + p.image.replace(/"/g, '&quot;') + '" alt="" loading="lazy">' : '<div class="no-img"><i class="fas fa-image"></i></div>') +
-                        '</div>' +
-                        '<div class="product-info">' +
-                        (p.brand ? '<span class="product-brand">' + p.brand.replace(/</g, '&lt;') + '</span>' : '') +
-                        '<h3>' + p.name.replace(/</g, '&lt;') + '</h3>' +
-                        '<div class="product-price"><span class="price">$' + p.price + '</span></div>' +
-                        '</div></a>';
-                });
-                grid.innerHTML = html;
-            })
-            .catch(function() {
-                grid.innerHTML = '<p style="text-align:center;padding:40px;color:var(--text-muted);grid-column:1/-1;">Error loading products.</p>';
-            });
-    };
 });
 </script>
 
