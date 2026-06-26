@@ -10,6 +10,11 @@ if (empty($cart) && empty($_GET['success'])) {
     exit;
 }
 
+if (empty($_SESSION['customer_id']) && empty($_GET['success'])) {
+    header('Location: ' . SITE_URL . '/login.php?redirect=checkout');
+    exit;
+}
+
 $msg = '';
 $msgType = '';
 

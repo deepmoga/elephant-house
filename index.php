@@ -20,19 +20,9 @@ $firstFeaturedId = !empty($featuredCats) ? $featuredCats[0]['api_category_id'] :
 <?php if (!empty($banners)): ?>
 <section class="hero-slider">
     <?php foreach ($banners as $i => $banner): ?>
-    <div class="hero-slide <?php echo $i === 0 ? 'active' : ''; ?>"
-         style="background-image: url('<?php echo UPLOAD_URL . 'banners/' . htmlspecialchars($banner['image']); ?>');">
-        <div class="hero-overlay">
-            <div class="container">
-                <div class="hero-content">
-                    <?php if (!empty($banner['title'])): ?><h1><?php echo htmlspecialchars($banner['title']); ?></h1><?php endif; ?>
-                    <?php if (!empty($banner['subtitle'])): ?><p><?php echo htmlspecialchars($banner['subtitle']); ?></p><?php endif; ?>
-                    <a href="<?php echo htmlspecialchars($banner['link'] ?: SITE_URL . '/categories.php'); ?>" class="btn btn-primary">Shop Now</a>
-                    <a href="<?php echo SITE_URL; ?>/page.php?slug=about-us" class="btn btn-outline">Learn More</a>
-                </div>
-            </div>
-        </div>
-    </div>
+    <a href="<?php echo htmlspecialchars($banner['link'] ?: SITE_URL . '/categories.php'); ?>" class="hero-slide <?php echo $i === 0 ? 'active' : ''; ?>"
+         style="background-image: url('<?php echo UPLOAD_URL . 'banners/' . htmlspecialchars($banner['image']); ?>');display:block;">
+    </a>
     <?php endforeach; ?>
     <?php if (count($banners) > 1): ?>
     <button class="slider-arrow prev"><i class="fas fa-chevron-left"></i></button>
@@ -154,14 +144,8 @@ $firstFeaturedId = !empty($featuredCats) ? $featuredCats[0]['api_category_id'] :
         </div>
         <div class="offers-grid">
             <?php foreach ($offers as $offer): ?>
-            <a href="<?php echo htmlspecialchars($offer['link'] ?: '#'); ?>" class="offer-card"
-               style="background-image: url('<?php echo UPLOAD_URL . 'offers/' . htmlspecialchars($offer['image']); ?>');">
-                <div class="offer-card-overlay">
-                    <div class="offer-card-content">
-                        <?php if (!empty($offer['title'])): ?><h3><?php echo htmlspecialchars($offer['title']); ?></h3><?php endif; ?>
-                        <?php if (!empty($offer['description'])): ?><p><?php echo htmlspecialchars($offer['description']); ?></p><?php endif; ?>
-                    </div>
-                </div>
+            <a href="<?php echo htmlspecialchars($offer['link'] ?: '#'); ?>" class="offer-card">
+                <img src="<?php echo UPLOAD_URL . 'offers/' . htmlspecialchars($offer['image']); ?>" alt="<?php echo htmlspecialchars($offer['title'] ?? ''); ?>">
             </a>
             <?php endforeach; ?>
         </div>

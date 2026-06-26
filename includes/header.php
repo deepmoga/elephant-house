@@ -6,6 +6,15 @@ $parentCategories = getParentCategories();
 $menuCategories = getMenuCategories();
 $currentPage = basename($_SERVER['PHP_SELF'], '.php');
 $cartCount = getCartCount();
+
+$db = getDB();
+$menuCatsWithSubs = [];
+foreach ($menuCategories as $mc) {
+    $subs = $db->prepare("SELECT api_category_id, api_category_name, image FROM category_mapping WHERE parent_category_id = ? ORDER BY sort_order ASC");
+    $subs->execute([$mc['id']]);
+    $mc['subcategories'] = $subs->fetchAll();
+    $menuCatsWithSubs[] = $mc;
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -33,9 +42,10 @@ $cartCount = getCartCount();
             <?php endif; ?>
         </div>
         <div class="top-bar-right">
-            <?php if (!empty($settings['opening_hours'])): ?>
-            <span><i class="fas fa-clock"></i> <?php echo htmlspecialchars($settings['opening_hours']); ?></span>
-            <?php endif; ?>
+            <a href="<?php echo SITE_URL; ?>/page.php?slug=about-us">About Us</a>
+            <a href="<?php echo SITE_URL; ?>/blogs.php">Blog</a>
+            <a href="<?php echo SITE_URL; ?>/faq.php">FAQ</a>
+            <a href="<?php echo SITE_URL; ?>/contact.php">Contact</a>
         </div>
     </div>
 </div>
@@ -45,14 +55,11 @@ $cartCount = getCartCount();
     <div class="container">
         <div class="header-inner">
             <div class="logo">
-                <a href="<?php echo SITE_URL; ?>">
+                <a href="<?php echo SITE_URL; ?>" style="display:flex;align-items:center;gap:10px;">
+                    <img src="<?php echo UPLOAD_URL; ?>country-logo.png" alt="" class="country-flag">
                     <?php if (!empty($settings['logo'])): ?>
-                    <img src="<?php echo UPLOAD_URL . htmlspecialchars($settings['logo']); ?>" alt="<?php echo htmlspecialchars($settings['site_name'] ?? ''); ?>">
+                    <img src="<?php echo UPLOAD_URL . htmlspecialchars($settings['logo']); ?>" alt="<?php echo htmlspecialchars($settings['site_name'] ?? ''); ?>" class="logo-img">
                     <?php endif; ?>
-                    <div class="logo-text">
-                        <?php echo htmlspecialchars($settings['site_name'] ?? 'Elephant House'); ?>
-                        <small><?php echo htmlspecialchars($settings['site_tagline'] ?? 'Premium Grocery Store'); ?></small>
-                    </div>
                 </a>
             </div>
 
@@ -101,43 +108,36 @@ $cartCount = getCartCount();
                     <i class="fas fa-home"></i> Home
                 </a>
 
-                <?php if (!empty($menuCategories)): ?>
-                    <?php foreach ($menuCategories as $pCat): ?>
-                    <div class="nav-dropdown">
-                        <a href="<?php echo SITE_URL; ?>/category.php?id=<?php echo $pCat['id']; ?>">
-                            <?php echo htmlspecialchars($pCat['api_category_name']); ?>
-                            <?php if (!empty($pCat['sub_api_ids'])): ?>
-                            <i class="fas fa-chevron-down" style="font-size:10px;margin-left:4px;"></i>
-                            <?php endif; ?>
-                        </a>
-                        <?php if (!empty($pCat['sub_api_names'])): ?>
-                        <div class="dropdown-menu">
-                            <a href="<?php echo SITE_URL; ?>/products.php?category=<?php echo urlencode($pCat['api_category_id']); ?>">
-                                All <?php echo htmlspecialchars($pCat['api_category_name']); ?>
-                            </a>
-                            <?php
-                            $subIds = explode(',', $pCat['sub_api_ids']);
-                            $subNames = explode('||', $pCat['sub_api_names']);
-                            foreach ($subIds as $idx => $subId):
-                                $subName = $subNames[$idx] ?? '';
-                            ?>
-                            <a href="<?php echo SITE_URL; ?>/products.php?category=<?php echo urlencode(trim($subId)); ?>">
-                                <?php echo htmlspecialchars(trim($subName)); ?>
+                <?php foreach ($menuCatsWithSubs as $pCat): ?>
+                <div class="nav-dropdown">
+                    <a href="<?php echo SITE_URL; ?>/category.php?id=<?php echo $pCat['id']; ?>">
+                        <?php echo htmlspecialchars($pCat['api_category_name']); ?>
+                        <?php if (!empty($pCat['subcategories'])): ?>
+                        <i class="fas fa-chevron-down" style="font-size:10px;margin-left:4px;"></i>
+                        <?php endif; ?>
+                    </a>
+                    <?php if (!empty($pCat['subcategories'])): ?>
+                    <div class="mega-menu">
+                        <div class="mega-menu-grid">
+                            <?php foreach ($pCat['subcategories'] as $sub): ?>
+                            <a href="<?php echo SITE_URL; ?>/products.php?category=<?php echo urlencode($sub['api_category_id']); ?>" class="mega-menu-item">
+                                <?php if (!empty($sub['image'])): ?>
+                                <img src="<?php echo UPLOAD_URL . htmlspecialchars($sub['image']); ?>" alt="" class="mega-menu-img">
+                                <?php else: ?>
+                                <div class="mega-menu-img-placeholder"><i class="fas fa-utensils"></i></div>
+                                <?php endif; ?>
+                                <span><?php echo htmlspecialchars($sub['api_category_name']); ?></span>
                             </a>
                             <?php endforeach; ?>
                         </div>
-                        <?php endif; ?>
                     </div>
-                    <?php endforeach; ?>
-                <?php endif; ?>
+                    <?php endif; ?>
+                </div>
+                <?php endforeach; ?>
 
                 <a href="<?php echo SITE_URL; ?>/categories.php" class="<?php echo $currentPage === 'categories' ? 'active' : ''; ?>">
                     <i class="fas fa-th-large"></i> All Categories
                 </a>
-                <a href="<?php echo SITE_URL; ?>/blogs.php" class="<?php echo $currentPage === 'blogs' ? 'active' : ''; ?>">Blog</a>
-                <a href="<?php echo SITE_URL; ?>/faq.php" class="<?php echo $currentPage === 'faq' ? 'active' : ''; ?>">FAQ</a>
-                <a href="<?php echo SITE_URL; ?>/page.php?slug=about-us">About Us</a>
-                <a href="<?php echo SITE_URL; ?>/contact.php" class="<?php echo $currentPage === 'contact' ? 'active' : ''; ?>">Contact</a>
             </div>
         </div>
     </div>
