@@ -56,12 +56,15 @@ foreach ($menuCategories as $mc) {
         <div class="header-inner">
             <div class="logo">
                 <a href="<?php echo SITE_URL; ?>" style="display:flex;align-items:center;gap:10px;">
-                    <?php if (file_exists(UPLOAD_PATH . 'country-logo.png')): ?>
-                    <img src="<?php echo UPLOAD_URL; ?>country-logo.png" alt="" class="country-flag">
-                    <?php endif; ?>
+                    
                     <?php if (!empty($settings['logo'])): ?>
-                    <img src="<?php echo UPLOAD_URL . htmlspecialchars($settings['logo']); ?>" alt="<?php echo htmlspecialchars($settings['site_name'] ?? ''); ?>" class="logo-img">
+                    <img  src="<?php echo UPLOAD_URL . htmlspecialchars($settings['logo']); ?>" alt="<?php echo htmlspecialchars($settings['site_name'] ?? ''); ?>" class="logo-img">
                     <?php endif; ?>
+					
+					<?php if (file_exists(UPLOAD_PATH . 'country-logo.png')): ?>
+                    <img style="height:30px;" src="<?php echo UPLOAD_URL; ?>country-logo.png" alt="" class="country-flag">
+                    <?php endif; ?>
+					
                 </a>
             </div>
 

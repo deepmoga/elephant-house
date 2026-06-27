@@ -246,6 +246,10 @@ try {
     $paypalDefaults = [
         'paypal_username' => '', 'paypal_password' => '', 'paypal_signature' => '',
         'paypal_mode' => 'sandbox', 'paypal_enabled' => '0',
+        'smtp_host' => 'smtp.gmail.com', 'smtp_port' => '587',
+        'smtp_username' => '', 'smtp_password' => '',
+        'smtp_from_email' => '', 'smtp_from_name' => 'Elephant House',
+        'admin_email' => '',
     ];
     $stmtSetting = $pdo->prepare("INSERT IGNORE INTO site_settings (setting_key, setting_value) VALUES (?, ?)");
     foreach ($paypalDefaults as $k => $v) { $stmtSetting->execute([$k, $v]); }

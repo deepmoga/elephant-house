@@ -10,7 +10,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $fields = [
         'site_name', 'site_tagline', 'phone', 'email', 'address',
         'facebook', 'instagram', 'opening_hours', 'footer_text', 'google_maps',
-        'paypal_username', 'paypal_password', 'paypal_signature', 'paypal_mode', 'paypal_enabled'
+        'paypal_username', 'paypal_password', 'paypal_signature', 'paypal_mode', 'paypal_enabled',
+        'smtp_host', 'smtp_port', 'smtp_username', 'smtp_password', 'smtp_from_email', 'smtp_from_name', 'admin_email'
     ];
 
     $stmt = $db->prepare("INSERT INTO site_settings (setting_key, setting_value) VALUES (?, ?) ON DUPLICATE KEY UPDATE setting_value = VALUES(setting_value)");
@@ -186,6 +187,48 @@ $s = getAllSettings();
                 </div>
             </div>
             <p class="form-hint"><i class="fas fa-info-circle"></i> Get your API credentials from PayPal Developer Dashboard. Use Sandbox mode for testing.</p>
+        </div>
+    </div>
+
+    <div class="card">
+        <div class="card-header"><h2><i class="fas fa-envelope"></i> Email / SMTP Settings</h2></div>
+        <div class="card-body">
+            <div style="display:grid;grid-template-columns:2fr 1fr;gap:20px;">
+                <div class="form-group">
+                    <label>SMTP Host</label>
+                    <input type="text" name="smtp_host" class="form-control" value="<?php echo htmlspecialchars($s['smtp_host'] ?? 'smtp.gmail.com'); ?>" placeholder="smtp.gmail.com">
+                </div>
+                <div class="form-group">
+                    <label>SMTP Port</label>
+                    <input type="number" name="smtp_port" class="form-control" value="<?php echo htmlspecialchars($s['smtp_port'] ?? '587'); ?>" placeholder="587">
+                </div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+                <div class="form-group">
+                    <label>SMTP Username (Email)</label>
+                    <input type="text" name="smtp_username" class="form-control" value="<?php echo htmlspecialchars($s['smtp_username'] ?? ''); ?>" placeholder="your@gmail.com">
+                </div>
+                <div class="form-group">
+                    <label>SMTP Password (App Password)</label>
+                    <input type="password" name="smtp_password" class="form-control" value="<?php echo htmlspecialchars($s['smtp_password'] ?? ''); ?>">
+                    <p class="form-hint">For Gmail use App Password, not your regular password</p>
+                </div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;">
+                <div class="form-group">
+                    <label>From Email</label>
+                    <input type="email" name="smtp_from_email" class="form-control" value="<?php echo htmlspecialchars($s['smtp_from_email'] ?? ''); ?>" placeholder="noreply@yourstore.com">
+                </div>
+                <div class="form-group">
+                    <label>From Name</label>
+                    <input type="text" name="smtp_from_name" class="form-control" value="<?php echo htmlspecialchars($s['smtp_from_name'] ?? 'Elephant House'); ?>">
+                </div>
+                <div class="form-group">
+                    <label>Admin Notification Email</label>
+                    <input type="email" name="admin_email" class="form-control" value="<?php echo htmlspecialchars($s['admin_email'] ?? ''); ?>" placeholder="admin@yourstore.com">
+                    <p class="form-hint">Receives order notifications</p>
+                </div>
+            </div>
         </div>
     </div>
 

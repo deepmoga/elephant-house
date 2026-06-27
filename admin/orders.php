@@ -12,7 +12,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && $_POST['form_action'] === 'update_s
     $allowed = ['pending','confirmed','processing','shipped','delivered','cancelled'];
     if ($orderId > 0 && in_array($status, $allowed)) {
         $db->prepare("UPDATE orders SET status = ? WHERE id = ?")->execute([$status, $orderId]);
-        $msg = 'Order status updated.';
+        require_once __DIR__ . '/../api/mailer.php';
+        sendOrderStatusEmail($orderId);
+        $msg = 'Order status updated and customer notified.';
     }
 }
 

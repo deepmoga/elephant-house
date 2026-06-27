@@ -73,7 +73,10 @@ require_once __DIR__ . '/includes/header.php';
                 </button>
             </form>
 
-            <p style="text-align:center;margin-top:25px;font-size:14px;color:var(--text-light);">
+            <p style="text-align:center;margin-top:15px;font-size:13px;">
+                <a href="<?php echo SITE_URL; ?>/forgot-password.php" style="color:var(--text-muted);">Forgot your password?</a>
+            </p>
+            <p style="text-align:center;margin-top:10px;font-size:14px;color:var(--text-light);">
                 Don't have an account? <a href="<?php echo SITE_URL; ?>/signup.php" style="color:var(--primary);font-weight:600;">Create one</a>
             </p>
         </div>

@@ -78,6 +78,9 @@ if ($couponCode) {
     $db->prepare("UPDATE coupons SET used_count = used_count + 1 WHERE code = ?")->execute([$couponCode]);
 }
 
+require_once __DIR__ . '/api/mailer.php';
+sendOrderConfirmationEmail($orderId);
+
 unset($_SESSION['cart'], $_SESSION['coupon'], $_SESSION['checkout'], $_SESSION['paypal_token']);
 
 header('Location: ' . SITE_URL . '/checkout.php?success=' . urlencode($orderNumber));
