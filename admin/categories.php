@@ -135,14 +135,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $stmt->execute([$parentApiId, $parentApiName, $name, $slug, $description, $sortOrder, $showInMenu, $allowCart, $priceMarkup, $priceMarkupType, $isFeatured, $isActive, $catId]);
                     }
 
-                    // Delete old subcategory images
-                    $oldSubs = $db->prepare("SELECT image FROM category_mapping WHERE parent_category_id = ?");
+                    $oldSubImages = [];
+                    $oldSubs = $db->prepare("SELECT api_category_id, image FROM category_mapping WHERE parent_category_id = ?");
                     $oldSubs->execute([$catId]);
                     while ($os = $oldSubs->fetch()) {
-                        if ($os['image'] && file_exists(UPLOAD_PATH . $os['image'])) {
-                            unlink(UPLOAD_PATH . $os['image']);
-                        }
+                        $oldSubImages[$os['api_category_id']] = $os['image'];
                     }
+
                     $db->prepare("DELETE FROM category_mapping WHERE parent_category_id = ?")->execute([$catId]);
 
                     if (!empty($selectedSubs)) {
@@ -163,11 +162,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 if (in_array($ext, ['jpg', 'jpeg', 'png', 'gif', 'webp'])) {
                                     $subImgName = 'subcat_' . time() . '_' . mt_rand(1000, 9999) . '.' . $ext;
                                     move_uploaded_file($_FILES[$fileKey]['tmp_name'], UPLOAD_PATH . $subImgName);
+                                    if (!empty($oldSubImages[$subId]) && file_exists(UPLOAD_PATH . $oldSubImages[$subId])) {
+                                        unlink(UPLOAD_PATH . $oldSubImages[$subId]);
+                                    }
                                 }
                             }
                             if (!empty($subName)) {
-                                $stmtMap->execute([$catId, $subId, $subName, $subImgName ?: null, $order++]);
+                                $preservedImage = $oldSubImages[$subId] ?? null;
+                                $stmtMap->execute([$catId, $subId, $subName, $subImgName ?: $preservedImage, $order++]);
                             }
+                        }
+                    }
+
+                    foreach ($oldSubImages as $oldSubId => $oldImage) {
+                        if (!in_array($oldSubId, $selectedSubs, true) && $oldImage && file_exists(UPLOAD_PATH . $oldImage)) {
+                            unlink(UPLOAD_PATH . $oldImage);
                         }
                     }
 
@@ -203,15 +212,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 $editData = null;
 $editMappings = [];
+$editMappingImages = [];
 if ($action === 'edit') {
     $editId = intval($_GET['id'] ?? 0);
     $stmt = $db->prepare("SELECT * FROM parent_categories WHERE id = ?");
     $stmt->execute([$editId]);
     $editData = $stmt->fetch();
     if ($editData) {
-        $stmt = $db->prepare("SELECT api_category_id FROM category_mapping WHERE parent_category_id = ?");
+        $stmt = $db->prepare("SELECT api_category_id, image FROM category_mapping WHERE parent_category_id = ?");
         $stmt->execute([$editId]);
-        $editMappings = $stmt->fetchAll(PDO::FETCH_COLUMN);
+        while ($mapping = $stmt->fetch()) {
+            $editMappings[] = $mapping['api_category_id'];
+            $editMappingImages[$mapping['api_category_id']] = $mapping['image'];
+        }
     } else {
         $action = 'list';
     }
@@ -413,6 +426,7 @@ $usedParentIds = $rows ?: [];
                         <?php foreach ($apiCategories as $ac):
                             $isChecked = in_array($ac['id'], $editMappings);
                             $fileKey = 'sub_image_' . str_replace('-', '_', $ac['id']);
+                            $existingSubImage = $editMappingImages[$ac['id']] ?? '';
                         ?>
                         <div class="sub-cat-row" data-id="<?php echo htmlspecialchars($ac['id']); ?>" data-name="<?php echo strtolower($ac['name']); ?>" style="display:flex;align-items:center;gap:12px;padding:10px 15px;border-bottom:1px solid #f5f5f5;">
                             <input type="checkbox" name="sub_categories[]" value="<?php echo htmlspecialchars($ac['id']); ?>"
@@ -421,6 +435,12 @@ $usedParentIds = $rows ?: [];
                                 onchange="toggleSubImage(this)">
                             <span style="font-size:13px;font-weight:500;min-width:150px;"><?php echo htmlspecialchars($ac['name']); ?></span>
                             <input type="file" name="<?php echo $fileKey; ?>" accept="image/*" style="font-size:12px;max-width:220px;<?php echo $isChecked ? '' : 'display:none;'; ?>" class="sub-img-input">
+                            <?php if ($isChecked && !empty($existingSubImage)): ?>
+                            <span class="sub-img-current" style="display:flex;align-items:center;gap:6px;font-size:12px;color:var(--admin-text-light);">
+                                <img src="<?php echo UPLOAD_URL . htmlspecialchars($existingSubImage); ?>" alt="" style="width:34px;height:34px;object-fit:cover;border-radius:6px;border:1px solid var(--admin-border);">
+                                Current image
+                            </span>
+                            <?php endif; ?>
                         </div>
                         <?php endforeach; ?>
                     </div>
@@ -524,8 +544,11 @@ $usedParentIds = $rows ?: [];
     }
 
     function toggleSubImage(checkbox) {
-        var fileInput = checkbox.closest('.sub-cat-row').querySelector('.sub-img-input');
+        var row = checkbox.closest('.sub-cat-row');
+        var fileInput = row.querySelector('.sub-img-input');
+        var currentPreview = row.querySelector('.sub-img-current');
         fileInput.style.display = checkbox.checked ? '' : 'none';
+        if (currentPreview) currentPreview.style.display = checkbox.checked ? 'flex' : 'none';
     }
 
     function toggleParentSource() {
