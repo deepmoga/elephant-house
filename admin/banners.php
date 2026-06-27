@@ -178,7 +178,7 @@ if ($action === 'edit') {
                 <div class="form-group">
                     <label>Banner Image <span class="required">*</span></label>
                     <input type="file" name="image" class="form-control form-control-file" accept="image/*" <?php echo $action === 'add' ? 'required' : ''; ?>>
-                    <p class="form-hint">Recommended size: 1920x600px. Formats: JPG, PNG, WebP</p>
+                    <p class="form-hint">Upload a wide banner image. It will show at 100% width with automatic height on desktop and mobile. Formats: JPG, PNG, WebP</p>
                     <div class="img-preview">
                         <?php if (!empty($editData['image'])): ?>
                         <img src="<?php echo UPLOAD_URL . 'banners/' . htmlspecialchars($editData['image']); ?>" alt="">

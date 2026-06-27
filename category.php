@@ -18,7 +18,8 @@ $stmt->execute([$parentId]);
 $mappings = $stmt->fetchAll();
 
 $parentApiId = $parentCat['api_category_id'];
-$parentApiName = $parentCat['api_category_name'];
+$parentApiName = $parentCat['name'] ?: $parentCat['api_category_name'];
+$isCustomParent = strpos($parentApiId, 'custom-') === 0;
 ?>
 
 <div class="page-header">
@@ -61,6 +62,7 @@ $parentApiName = $parentCat['api_category_name'];
         <hr style="border:none;border-top:1px solid var(--border);margin-bottom:40px;">
         <?php endif; ?>
 
+        <?php if (!$isCustomParent): ?>
         <!-- Also show the parent category's own products -->
         <div class="section-header" style="text-align:left;margin-bottom:25px;">
             <h2 style="font-size:24px;">All <?php echo htmlspecialchars($parentApiName); ?> Products</h2>
@@ -105,6 +107,7 @@ $parentApiName = $parentCat['api_category_name'];
             <i class="fas fa-box-open" style="font-size:50px;color:var(--text-muted);margin-bottom:15px;display:block;"></i>
             <p style="color:var(--text-muted);">No products found in this category. Browse subcategories above.</p>
         </div>
+        <?php endif; ?>
         <?php endif; ?>
     </div>
 </section>

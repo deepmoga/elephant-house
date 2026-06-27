@@ -3,8 +3,11 @@ require_once __DIR__ . '/includes/header.php';
 
 $banners = getActiveBanners();
 $offers = getActiveOffers();
+$homeOffer = getHomeOffer();
+$regularOffers = array_filter($offers, function($offer) { return empty($offer['show_on_home']); });
 $parentCats = getParentCategories();
 $featuredCats = getFeaturedCategories();
+$homeSections = getActiveHomeSections();
 $apiCategories = getCategories();
 $blogs = getActiveBlogs(3);
 
@@ -13,15 +16,53 @@ $products = $featuredProducts['data'] ?? [];
 $activeProducts = array_filter($products, function($p) { return !empty($p['is_active']); });
 $latestProducts = array_slice(array_values($activeProducts), 0, 8);
 
-$firstFeaturedId = !empty($featuredCats) ? $featuredCats[0]['api_category_id'] : '';
+$firstFeaturedId = '';
+if (!empty($featuredCats)) {
+    $firstFeaturedId = $featuredCats[0]['api_category_id'];
+    if (strpos($firstFeaturedId, 'custom-') === 0) {
+        $firstFeaturedId = '';
+    }
+}
+
+function homeSectionProducts($categoryId, $limit) {
+    $result = getProductsByCategory($categoryId);
+    $products = array_filter($result['data'] ?? [], function($p) { return !empty($p['is_active']); });
+    return array_slice(array_values($products), 0, max(1, intval($limit)));
+}
+
+function renderHomeProductCard($product) {
+    $catId = $product['product_type_id'] ?? '';
+    $rawPrice = $product['price_including_tax'] ?? 0;
+    $price = applyPriceMarkup($rawPrice, $catId);
+    $imgUrl = $product['image_url'] ?? '';
+    $brand = $product['brand']['name'] ?? '';
+    ob_start();
+    ?>
+    <a href="<?php echo SITE_URL; ?>/product.php?id=<?php echo urlencode($product['id']); ?>" class="home-section-product">
+        <div class="home-section-product-img">
+            <?php if (!empty($imgUrl)): ?>
+            <img src="<?php echo htmlspecialchars($imgUrl); ?>" alt="<?php echo htmlspecialchars($product['name']); ?>" loading="lazy">
+            <?php else: ?>
+            <div class="no-img"><i class="fas fa-image"></i></div>
+            <?php endif; ?>
+        </div>
+        <div class="home-section-product-info">
+            <?php if (!empty($brand)): ?><span><?php echo htmlspecialchars($brand); ?></span><?php endif; ?>
+            <h3><?php echo htmlspecialchars($product['name']); ?></h3>
+            <strong>$<?php echo number_format($price, 2); ?></strong>
+        </div>
+    </a>
+    <?php
+    return ob_get_clean();
+}
 ?>
 
 <!-- Hero Slider -->
 <?php if (!empty($banners)): ?>
 <section class="hero-slider">
     <?php foreach ($banners as $i => $banner): ?>
-    <a href="<?php echo htmlspecialchars($banner['link'] ?: SITE_URL . '/categories.php'); ?>" class="hero-slide <?php echo $i === 0 ? 'active' : ''; ?>"
-         style="background-image: url('<?php echo UPLOAD_URL . 'banners/' . htmlspecialchars($banner['image']); ?>');display:block;">
+    <a href="<?php echo htmlspecialchars($banner['link'] ?: SITE_URL . '/categories.php'); ?>" class="hero-slide <?php echo $i === 0 ? 'active' : ''; ?>">
+        <img src="<?php echo UPLOAD_URL . 'banners/' . htmlspecialchars($banner['image']); ?>" alt="<?php echo htmlspecialchars($banner['title'] ?: ''); ?>" class="hero-banner-img">
     </a>
     <?php endforeach; ?>
     <?php if (count($banners) > 1): ?>
@@ -44,6 +85,22 @@ $firstFeaturedId = !empty($featuredCats) ? $featuredCats[0]['api_category_id'] :
 </section>
 <?php endif; ?>
 
+<?php if (!empty($homeOffer)): ?>
+<section class="home-offer-band">
+    <div class="container">
+        <a href="<?php echo htmlspecialchars($homeOffer['link'] ?: '#'); ?>" class="home-offer-feature">
+            <img src="<?php echo UPLOAD_URL . 'offers/' . htmlspecialchars($homeOffer['image']); ?>" alt="<?php echo htmlspecialchars($homeOffer['title'] ?? ''); ?>">
+            <?php if (!empty($homeOffer['title']) || !empty($homeOffer['description'])): ?>
+            <div class="home-offer-copy">
+                <?php if (!empty($homeOffer['title'])): ?><h2><?php echo htmlspecialchars($homeOffer['title']); ?></h2><?php endif; ?>
+                <?php if (!empty($homeOffer['description'])): ?><p><?php echo htmlspecialchars($homeOffer['description']); ?></p><?php endif; ?>
+            </div>
+            <?php endif; ?>
+        </a>
+    </div>
+</section>
+<?php endif; ?>
+
 <!-- Featured Categories with AJAX Products -->
 <?php if (!empty($featuredCats)): ?>
 <section class="section" style="background:var(--white);">
@@ -58,15 +115,25 @@ $firstFeaturedId = !empty($featuredCats) ? $featuredCats[0]['api_category_id'] :
             <!-- Left: Category Tabs -->
             <div class="featured-tabs">
                 <?php foreach ($featuredCats as $i => $fc): ?>
+                <?php
+                $featuredCategoryId = $fc['api_category_id'];
+                if (strpos($featuredCategoryId, 'custom-') === 0) {
+                    $firstMapped = $db->prepare("SELECT api_category_id FROM category_mapping WHERE parent_category_id = ? ORDER BY sort_order ASC LIMIT 1");
+                    $firstMapped->execute([$fc['id']]);
+                    $featuredCategoryId = $firstMapped->fetchColumn() ?: '';
+                    if ($i === 0 && $featuredCategoryId) $firstFeaturedId = $featuredCategoryId;
+                }
+                ?>
+                <?php if (!$featuredCategoryId) continue; ?>
                 <button class="featured-tab <?php echo $i === 0 ? 'active' : ''; ?>"
-                    data-category="<?php echo htmlspecialchars($fc['api_category_id']); ?>"
+                    data-category="<?php echo htmlspecialchars($featuredCategoryId); ?>"
                     onclick="loadFeaturedProducts(this)">
                     <?php if (!empty($fc['image'])): ?>
                     <img src="<?php echo UPLOAD_URL . htmlspecialchars($fc['image']); ?>" alt="" class="featured-tab-img">
                     <?php else: ?>
                     <i class="fas fa-utensils featured-tab-icon"></i>
                     <?php endif; ?>
-                    <span><?php echo htmlspecialchars($fc['api_category_name']); ?></span>
+                    <span><?php echo htmlspecialchars($fc['name'] ?: $fc['api_category_name']); ?></span>
                     <i class="fas fa-chevron-right featured-tab-arrow"></i>
                 </button>
                 <?php endforeach; ?>
@@ -91,6 +158,66 @@ $firstFeaturedId = !empty($featuredCats) ? $featuredCats[0]['api_category_id'] :
 </section>
 <?php endif; ?>
 
+<?php foreach ($homeSections as $homeSection): ?>
+<?php
+$sectionSource = $homeSection['section_source'] ?? 'api';
+$sectionProducts = [];
+$sectionSubs = [];
+$sectionViewAllCategory = $homeSection['api_category_id'];
+
+if ($sectionSource === 'parent' && !empty($homeSection['parent_category_id'])) {
+    $subStmt = $db->prepare("SELECT api_category_id, api_category_name, image FROM category_mapping WHERE parent_category_id = ? ORDER BY sort_order ASC");
+    $subStmt->execute([$homeSection['parent_category_id']]);
+    $sectionSubs = $subStmt->fetchAll();
+    if (!empty($sectionSubs)) {
+        $sectionViewAllCategory = $sectionSubs[0]['api_category_id'];
+    }
+}
+
+$sectionProducts = homeSectionProducts($sectionViewAllCategory, $homeSection['product_limit']);
+?>
+<?php if (!empty($sectionProducts)): ?>
+<section class="section home-product-section">
+    <div class="container">
+        <div class="home-section-panel">
+            <div class="home-section-head">
+                <div>
+                    <h2><?php echo htmlspecialchars($homeSection['title']); ?></h2>
+                    <?php if (!empty($homeSection['subtitle'])): ?><p><?php echo htmlspecialchars($homeSection['subtitle']); ?></p><?php endif; ?>
+                </div>
+                <div class="home-section-actions">
+                    <a href="<?php echo SITE_URL; ?>/products.php?category=<?php echo urlencode($sectionViewAllCategory); ?>">View All <i class="fas fa-arrow-right"></i></a>
+                    <button type="button" class="home-carousel-btn home-carousel-prev" aria-label="Previous products"><i class="fas fa-chevron-left"></i></button>
+                    <button type="button" class="home-carousel-btn home-carousel-next" aria-label="Next products"><i class="fas fa-chevron-right"></i></button>
+                </div>
+            </div>
+
+            <div class="<?php echo $sectionSource === 'parent' && !empty($sectionSubs) ? 'home-section-layout' : 'home-section-layout no-sidebar'; ?>">
+                <?php if ($sectionSource === 'parent' && !empty($sectionSubs)): ?>
+                <aside class="home-section-cats">
+                    <?php foreach ($sectionSubs as $idx => $sub): ?>
+                    <a href="<?php echo SITE_URL; ?>/products.php?category=<?php echo urlencode($sub['api_category_id']); ?>" class="<?php echo $idx === 0 ? 'active' : ''; ?>">
+                        <i class="fas fa-arrows-alt"></i>
+                        <span><?php echo htmlspecialchars($sub['api_category_name']); ?></span>
+                    </a>
+                    <?php endforeach; ?>
+                </aside>
+                <?php endif; ?>
+
+                <div class="home-section-carousel" data-home-carousel>
+                    <div class="home-section-products">
+                        <?php foreach ($sectionProducts as $product): ?>
+                        <?php echo renderHomeProductCard($product); ?>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<?php endif; ?>
+<?php endforeach; ?>
+
 <!-- Shop by Category Grid -->
 <section class="section">
     <div class="container">
@@ -105,14 +232,14 @@ $firstFeaturedId = !empty($featuredCats) ? $featuredCats[0]['api_category_id'] :
                 <a href="<?php echo SITE_URL; ?>/category.php?id=<?php echo $pCat['id']; ?>" class="category-card">
                     <div class="category-card-img">
                         <?php if (!empty($pCat['image'])): ?>
-                        <img src="<?php echo UPLOAD_URL . htmlspecialchars($pCat['image']); ?>" alt="<?php echo htmlspecialchars($pCat['api_category_name']); ?>">
+                        <img src="<?php echo UPLOAD_URL . htmlspecialchars($pCat['image']); ?>" alt="<?php echo htmlspecialchars($pCat['name'] ?: $pCat['api_category_name']); ?>">
                         <div class="cat-overlay"></div>
                         <?php else: ?>
                         <i class="fas fa-utensils"></i>
                         <?php endif; ?>
                     </div>
                     <h3>
-                        <?php echo htmlspecialchars($pCat['api_category_name']); ?>
+                        <?php echo htmlspecialchars($pCat['name'] ?: $pCat['api_category_name']); ?>
                         <?php $subCount = !empty($pCat['sub_api_ids']) ? count(explode(',', $pCat['sub_api_ids'])) : 0; ?>
                         <?php if ($subCount > 0): ?><span class="sub-count"><?php echo $subCount; ?> subcategories</span><?php endif; ?>
                     </h3>
@@ -134,7 +261,7 @@ $firstFeaturedId = !empty($featuredCats) ? $featuredCats[0]['api_category_id'] :
 </section>
 
 <!-- Offer Banners -->
-<?php if (!empty($offers)): ?>
+<?php if (!empty($regularOffers)): ?>
 <section class="section offers-section">
     <div class="container">
         <div class="section-header">
@@ -143,7 +270,7 @@ $firstFeaturedId = !empty($featuredCats) ? $featuredCats[0]['api_category_id'] :
             <div class="accent-line"></div>
         </div>
         <div class="offers-grid">
-            <?php foreach ($offers as $offer): ?>
+            <?php foreach ($regularOffers as $offer): ?>
             <a href="<?php echo htmlspecialchars($offer['link'] ?: '#'); ?>" class="offer-card">
                 <img src="<?php echo UPLOAD_URL . 'offers/' . htmlspecialchars($offer['image']); ?>" alt="<?php echo htmlspecialchars($offer['title'] ?? ''); ?>">
             </a>
@@ -285,7 +412,7 @@ function loadFeaturedProducts(btn) {
     var link = document.getElementById('featuredViewAllLink');
     if (link) link.href = _featSiteUrl + '/products.php?category=' + encodeURIComponent(catId);
 
-    fetch(_featSiteUrl + '/api/home-products.php?category_id=' + encodeURIComponent(catId) + '&limit=8')
+    fetch(_featSiteUrl + '/api/home-products.php?category_id=' + encodeURIComponent(catId) + '&limit=6')
         .then(function(r) { return r.json(); })
         .then(function(data) {
             if (!data.success || data.products.length === 0) {

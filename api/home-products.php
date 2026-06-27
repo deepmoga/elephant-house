@@ -4,7 +4,7 @@ require_once __DIR__ . '/fetch.php';
 header('Content-Type: application/json');
 
 $categoryId = trim($_GET['category_id'] ?? '');
-$limit = min(intval($_GET['limit'] ?? 8), 20);
+$limit = min(intval($_GET['limit'] ?? 6), 20);
 
 if (empty($categoryId)) {
     echo json_encode(['success' => false, 'products' => []]);

@@ -95,6 +95,15 @@ function getActiveOffers() {
     return $stmt->fetchAll();
 }
 
+function getHomeOffer() {
+    $db = getDB();
+    try {
+        $db->exec("ALTER TABLE `offer_banners` ADD COLUMN `show_on_home` TINYINT(1) DEFAULT 0 AFTER `is_active`");
+    } catch (PDOException $e) {}
+    $stmt = $db->query("SELECT * FROM offer_banners WHERE is_active = 1 AND show_on_home = 1 ORDER BY sort_order ASC, id ASC LIMIT 1");
+    return $stmt->fetch();
+}
+
 function getPage($slug) {
     $db = getDB();
     $stmt = $db->prepare("SELECT * FROM pages WHERE slug = ? AND is_active = 1");
@@ -110,6 +119,40 @@ function getParentCategories() {
         WHERE pc.is_active = 1
         GROUP BY pc.id
         ORDER BY pc.sort_order ASC");
+    return $stmt->fetchAll();
+}
+
+function ensureHomeSectionsTable() {
+    $db = getDB();
+    try {
+        $db->exec("CREATE TABLE IF NOT EXISTS `home_sections` (
+            `id` INT AUTO_INCREMENT PRIMARY KEY,
+            `title` VARCHAR(200) NOT NULL,
+            `subtitle` VARCHAR(300) DEFAULT NULL,
+            `section_source` ENUM('api','parent') NOT NULL DEFAULT 'api',
+            `parent_category_id` INT DEFAULT NULL,
+            `api_category_id` VARCHAR(100) NOT NULL,
+            `api_category_name` VARCHAR(200) NOT NULL,
+            `product_limit` INT NOT NULL DEFAULT 6,
+            `sort_order` INT DEFAULT 0,
+            `is_active` TINYINT(1) DEFAULT 1,
+            `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+        ) ENGINE=InnoDB");
+    } catch (PDOException $e) {}
+    $migrations = [
+        "ALTER TABLE `home_sections` ADD COLUMN `section_source` ENUM('api','parent') NOT NULL DEFAULT 'api' AFTER `subtitle`",
+        "ALTER TABLE `home_sections` ADD COLUMN `parent_category_id` INT DEFAULT NULL AFTER `section_source`",
+    ];
+    foreach ($migrations as $sql) {
+        try { $db->exec($sql); } catch (PDOException $e) {}
+    }
+}
+
+function getActiveHomeSections() {
+    ensureHomeSectionsTable();
+    $db = getDB();
+    $stmt = $db->query("SELECT * FROM home_sections WHERE is_active = 1 ORDER BY sort_order ASC, id ASC");
     return $stmt->fetchAll();
 }
 

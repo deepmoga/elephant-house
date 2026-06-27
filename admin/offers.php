@@ -3,6 +3,7 @@ $pageTitle = 'Offer Banners';
 require_once __DIR__ . '/layout.php';
 
 $db = getDB();
+try { $db->exec("ALTER TABLE `offer_banners` ADD COLUMN `show_on_home` TINYINT(1) DEFAULT 0 AFTER `is_active`"); } catch (PDOException $e) {}
 $action = $_GET['action'] ?? 'list';
 $msg = '';
 $msgType = '';
@@ -16,6 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $link = trim($_POST['link'] ?? '');
         $sortOrder = intval($_POST['sort_order'] ?? 0);
         $isActive = isset($_POST['is_active']) ? 1 : 0;
+        $showOnHome = isset($_POST['show_on_home']) ? 1 : 0;
         $offerId = intval($_POST['offer_id'] ?? 0);
 
         $imageName = '';
@@ -33,13 +35,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $msg = 'Please upload an image.';
                 $msgType = 'danger';
             } else {
-                $stmt = $db->prepare("INSERT INTO offer_banners (title, description, image, link, sort_order, is_active) VALUES (?, ?, ?, ?, ?, ?)");
-                $stmt->execute([$title, $description, $imageName, $link, $sortOrder, $isActive]);
+                if ($showOnHome) $db->exec("UPDATE offer_banners SET show_on_home = 0");
+                $stmt = $db->prepare("INSERT INTO offer_banners (title, description, image, link, sort_order, is_active, show_on_home) VALUES (?, ?, ?, ?, ?, ?, ?)");
+                $stmt->execute([$title, $description, $imageName, $link, $sortOrder, $isActive, $showOnHome]);
                 $msg = 'Offer banner added!';
                 $msgType = 'success';
                 $action = 'list';
             }
         } elseif ($postAction === 'edit' && $offerId > 0) {
+            if ($showOnHome) $db->prepare("UPDATE offer_banners SET show_on_home = 0 WHERE id != ?")->execute([$offerId]);
             if (!empty($imageName)) {
                 $old = $db->prepare("SELECT image FROM offer_banners WHERE id = ?");
                 $old->execute([$offerId]);
@@ -47,11 +51,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if ($oldImg && file_exists(UPLOAD_PATH . 'offers/' . $oldImg)) {
                     unlink(UPLOAD_PATH . 'offers/' . $oldImg);
                 }
-                $stmt = $db->prepare("UPDATE offer_banners SET title=?, description=?, image=?, link=?, sort_order=?, is_active=? WHERE id=?");
-                $stmt->execute([$title, $description, $imageName, $link, $sortOrder, $isActive, $offerId]);
+                $stmt = $db->prepare("UPDATE offer_banners SET title=?, description=?, image=?, link=?, sort_order=?, is_active=?, show_on_home=? WHERE id=?");
+                $stmt->execute([$title, $description, $imageName, $link, $sortOrder, $isActive, $showOnHome, $offerId]);
             } else {
-                $stmt = $db->prepare("UPDATE offer_banners SET title=?, description=?, link=?, sort_order=?, is_active=? WHERE id=?");
-                $stmt->execute([$title, $description, $link, $sortOrder, $isActive, $offerId]);
+                $stmt = $db->prepare("UPDATE offer_banners SET title=?, description=?, link=?, sort_order=?, is_active=?, show_on_home=? WHERE id=?");
+                $stmt->execute([$title, $description, $link, $sortOrder, $isActive, $showOnHome, $offerId]);
             }
             $msg = 'Offer banner updated!';
             $msgType = 'success';
@@ -104,7 +108,7 @@ if ($action === 'edit') {
             <div class="table-responsive">
                 <table class="data-table">
                     <thead>
-                        <tr><th>Image</th><th>Title</th><th>Order</th><th>Status</th><th>Actions</th></tr>
+                        <tr><th>Image</th><th>Title</th><th>Order</th><th>Home Offer</th><th>Status</th><th>Actions</th></tr>
                     </thead>
                     <tbody>
                     <?php foreach ($offers as $o): ?>
@@ -112,6 +116,13 @@ if ($action === 'edit') {
                             <td><img src="<?php echo UPLOAD_URL . 'offers/' . htmlspecialchars($o['image']); ?>" alt=""></td>
                             <td><?php echo htmlspecialchars($o['title'] ?: '(No title)'); ?></td>
                             <td><?php echo $o['sort_order']; ?></td>
+                            <td>
+                                <?php if (!empty($o['show_on_home'])): ?>
+                                <span class="badge badge-success"><i class="fas fa-home"></i> Yes</span>
+                                <?php else: ?>
+                                <span style="color:var(--admin-text-light);">-</span>
+                                <?php endif; ?>
+                            </td>
                             <td><span class="badge badge-<?php echo $o['is_active'] ? 'success' : 'danger'; ?>"><?php echo $o['is_active'] ? 'Active' : 'Inactive'; ?></span></td>
                             <td>
                                 <div class="actions">
@@ -176,6 +187,9 @@ if ($action === 'edit') {
                         <label>&nbsp;</label>
                         <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
                             <input type="checkbox" name="is_active" value="1" <?php echo ($editData['is_active'] ?? 1) ? 'checked' : ''; ?> style="accent-color:var(--admin-primary);width:18px;height:18px;"> Active
+                        </label>
+                        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;margin-top:10px;">
+                            <input type="checkbox" name="show_on_home" value="1" <?php echo ($editData['show_on_home'] ?? 0) ? 'checked' : ''; ?> style="accent-color:var(--admin-accent);width:18px;height:18px;"> Show as single home offer
                         </label>
                     </div>
                 </div>

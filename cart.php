@@ -29,7 +29,7 @@ foreach ($cart as $item) {
         <div class="cart-layout">
             <div class="cart-items">
                 <div class="card">
-                    <div class="card-body" style="padding:0;">
+                    <div class="card-body cart-table-wrap" style="padding:0;">
                         <table class="cart-table">
                             <thead>
                                 <tr>

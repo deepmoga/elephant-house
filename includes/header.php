@@ -112,8 +112,8 @@ foreach ($menuCategories as $mc) {
 
                 <?php foreach ($menuCatsWithSubs as $pCat): ?>
                 <div class="nav-dropdown">
-                    <a href="<?php echo SITE_URL; ?>/category.php?id=<?php echo $pCat['id']; ?>">
-                        <?php echo htmlspecialchars($pCat['api_category_name']); ?>
+                    <a href="<?php echo SITE_URL; ?>/category.php?id=<?php echo $pCat['id']; ?>" class="nav-dropdown-link">
+                        <?php echo htmlspecialchars($pCat['name'] ?: $pCat['api_category_name']); ?>
                         <?php if (!empty($pCat['subcategories'])): ?>
                         <i class="fas fa-chevron-down" style="font-size:10px;margin-left:4px;"></i>
                         <?php endif; ?>

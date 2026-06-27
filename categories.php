@@ -21,8 +21,8 @@ $apiCategories = getCategories();
             <div style="margin-bottom: 50px;">
                 <div class="section-header" style="text-align:left;margin-bottom:25px;">
                     <h2 style="font-size:28px;">
-                        <a href="<?php echo SITE_URL; ?>/products.php?category=<?php echo urlencode($pCat['api_category_id']); ?>" style="color:var(--primary);">
-                            <?php echo htmlspecialchars($pCat['api_category_name']); ?>
+                        <a href="<?php echo SITE_URL; ?>/category.php?id=<?php echo $pCat['id']; ?>" style="color:var(--primary);">
+                            <?php echo htmlspecialchars($pCat['name'] ?: $pCat['api_category_name']); ?>
                         </a>
                     </h2>
                     <?php if (!empty($pCat['description'])): ?>
@@ -48,9 +48,13 @@ $apiCategories = getCategories();
                     <?php endforeach; ?>
                 </div>
                 <?php else: ?>
+                <?php if (strpos($pCat['api_category_id'], 'custom-') === 0): ?>
+                <p style="color:var(--text-muted);">No subcategories have been added yet.</p>
+                <?php else: ?>
                 <a href="<?php echo SITE_URL; ?>/products.php?category=<?php echo urlencode($pCat['api_category_id']); ?>" class="btn-view-all" style="display:inline-block;">
-                    View All <?php echo htmlspecialchars($pCat['api_category_name']); ?> Products <i class="fas fa-arrow-right" style="margin-left:5px;"></i>
+                    View All <?php echo htmlspecialchars($pCat['name'] ?: $pCat['api_category_name']); ?> Products <i class="fas fa-arrow-right" style="margin-left:5px;"></i>
                 </a>
+                <?php endif; ?>
                 <?php endif; ?>
             </div>
             <?php endforeach; ?>

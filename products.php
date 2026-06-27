@@ -52,16 +52,18 @@ $db = getDB();
                     ?>
                     <div class="sidebar-cat-group <?php echo $isOpen ? 'open' : ''; ?>">
                         <div class="sidebar-cat-parent" onclick="this.parentElement.classList.toggle('open')" style="cursor:pointer;">
-                            <span><?php echo htmlspecialchars($pCat['api_category_name']); ?></span>
+                            <span><?php echo htmlspecialchars($pCat['name'] ?: $pCat['api_category_name']); ?></span>
                             <?php if (!empty($subList)): ?>
                             <i class="fas fa-chevron-down sidebar-cat-toggle"></i>
                             <?php endif; ?>
                         </div>
                         <?php if (!empty($subList)): ?>
                         <div class="sidebar-cat-subs-collapse">
+                            <?php if (strpos($pCat['api_category_id'], 'custom-') !== 0): ?>
                             <a href="<?php echo SITE_URL; ?>/products.php?category=<?php echo urlencode($pCat['api_category_id']); ?>" class="<?php echo $isCurrentParent ? 'active' : ''; ?>">
-                                All <?php echo htmlspecialchars($pCat['api_category_name']); ?>
+                                All <?php echo htmlspecialchars($pCat['name'] ?: $pCat['api_category_name']); ?>
                             </a>
+                            <?php endif; ?>
                             <?php foreach ($subList as $sub): ?>
                             <a href="<?php echo SITE_URL; ?>/products.php?category=<?php echo urlencode($sub['api_category_id']); ?>" class="<?php echo $sub['api_category_id'] === $categoryId ? 'active' : ''; ?>">
                                 <?php echo htmlspecialchars($sub['api_category_name']); ?>

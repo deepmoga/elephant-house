@@ -13,7 +13,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $postAction = $_POST['form_action'] ?? '';
 
     if ($postAction === 'add' || $postAction === 'edit') {
+        $parentSource = $_POST['parent_source'] ?? 'api';
         $parentApiId = trim($_POST['parent_api_id'] ?? '');
+        $customParentName = trim($_POST['custom_parent_name'] ?? '');
         $description = trim($_POST['description'] ?? '');
         $sortOrder = intval($_POST['sort_order'] ?? 0);
         $showInMenu = isset($_POST['show_in_menu']) ? 1 : 0;
@@ -26,15 +28,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $catId = intval($_POST['cat_id'] ?? 0);
 
         $parentApiName = '';
-        foreach ($apiCategories as $ac) {
-            if ($ac['id'] === $parentApiId) {
-                $parentApiName = $ac['name'];
-                break;
+        if ($parentSource === 'custom') {
+            $parentApiName = $customParentName;
+            if ($postAction === 'edit' && $catId > 0 && strpos($parentApiId, 'custom-') === 0) {
+                $parentApiId = trim($_POST['parent_api_id'] ?? '');
+            } else {
+                $baseSlug = strtolower(preg_replace('/[^a-z0-9]+/i', '-', $customParentName));
+                $parentApiId = 'custom-' . trim($baseSlug, '-') . '-' . time();
+            }
+        } else {
+            foreach ($apiCategories as $ac) {
+                if ($ac['id'] === $parentApiId) {
+                    $parentApiName = $ac['name'];
+                    break;
+                }
             }
         }
 
         if (empty($parentApiId) || empty($parentApiName)) {
-            $msg = 'Please select a parent category.';
+            $msg = 'Please select an API parent category or enter your own parent category name.';
             $msgType = 'danger';
         } else {
             $slug = strtolower(preg_replace('/[^a-z0-9]+/i', '-', $parentApiName));
@@ -52,10 +64,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
 
             if ($postAction === 'add') {
-                $existCheck = $db->prepare("SELECT id FROM parent_categories WHERE api_category_id = ?");
-                $existCheck->execute([$parentApiId]);
+                $existCheck = $parentSource === 'api'
+                    ? $db->prepare("SELECT id FROM parent_categories WHERE api_category_id = ?")
+                    : $db->prepare("SELECT id FROM parent_categories WHERE slug = ?");
+                $existCheck->execute([$parentSource === 'api' ? $parentApiId : $slug]);
                 if ($existCheck->fetch()) {
-                    $msg = 'This category is already added as a parent category.';
+                    $msg = 'This parent category is already added.';
                     $msgType = 'danger';
                 } else {
                     if (!empty($imageName)) {
@@ -99,10 +113,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $action = 'list';
                 }
             } elseif ($postAction === 'edit' && $catId > 0) {
-                $dupCheck = $db->prepare("SELECT id FROM parent_categories WHERE api_category_id = ? AND id != ?");
-                $dupCheck->execute([$parentApiId, $catId]);
+                $dupCheck = $parentSource === 'api'
+                    ? $db->prepare("SELECT id FROM parent_categories WHERE api_category_id = ? AND id != ?")
+                    : $db->prepare("SELECT id FROM parent_categories WHERE slug = ? AND id != ?");
+                $dupCheck->execute([$parentSource === 'api' ? $parentApiId : $slug, $catId]);
                 if ($dupCheck->fetch()) {
-                    $msg = 'This API category is already used by another parent category.';
+                    $msg = 'This parent category is already used by another category.';
                     $msgType = 'danger';
                 } else {
                     if (!empty($imageName)) {
@@ -251,7 +267,10 @@ $usedParentIds = $rows ?: [];
                     ?>
                         <tr>
                             <td>
-                                <strong style="font-size:15px;"><?php echo htmlspecialchars($c['api_category_name']); ?></strong>
+                                <strong style="font-size:15px;"><?php echo htmlspecialchars($c['name'] ?: $c['api_category_name']); ?></strong>
+                                <?php if (strpos($c['api_category_id'], 'custom-') === 0): ?>
+                                <span class="badge badge-warning" style="margin-left:6px;">Custom</span>
+                                <?php endif; ?>
                             </td>
                             <td>
                                 <?php if (!empty($subList)): ?>
@@ -326,14 +345,35 @@ $usedParentIds = $rows ?: [];
                 <input type="hidden" name="cat_id" value="<?php echo $editData['id']; ?>">
                 <?php endif; ?>
 
-                <!-- STEP 1: Select Parent Category from API -->
+                <!-- STEP 1: Select Parent Category -->
                 <div style="background:#fef2f2;border:2px solid #fca5a5;border-radius:10px;padding:25px;margin-bottom:25px;">
                     <h3 style="color:var(--admin-primary);margin-bottom:5px;">
-                        <i class="fas fa-folder" style="margin-right:8px;"></i>Step 1: Select Parent Category
+                        <i class="fas fa-folder" style="margin-right:8px;"></i>Step 1: Create Parent Category
                     </h3>
-                    <p style="color:var(--admin-text-light);font-size:13px;margin-bottom:15px;">Choose one API category to be the parent.</p>
+                    <p style="color:var(--admin-text-light);font-size:13px;margin-bottom:15px;">Choose an API category, or create your own parent category name.</p>
 
-                    <div class="form-group" style="margin-bottom:0;">
+                    <?php $isCustomParent = $editData && strpos($editData['api_category_id'], 'custom-') === 0; ?>
+                    <div style="display:flex;gap:20px;flex-wrap:wrap;margin-bottom:15px;">
+                        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+                            <input type="radio" name="parent_source" value="api" <?php echo !$isCustomParent ? 'checked' : ''; ?> onchange="toggleParentSource()" style="accent-color:var(--admin-primary);width:18px;height:18px;">
+                            Select from API categories
+                        </label>
+                        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+                            <input type="radio" name="parent_source" value="custom" <?php echo $isCustomParent ? 'checked' : ''; ?> onchange="toggleParentSource()" style="accent-color:var(--admin-primary);width:18px;height:18px;">
+                            Create my own parent category
+                        </label>
+                    </div>
+
+                    <?php if ($isCustomParent): ?>
+                    <input type="hidden" name="parent_api_id" value="<?php echo htmlspecialchars($editData['api_category_id']); ?>">
+                    <?php endif; ?>
+
+                    <div class="form-group" id="customParentBox" style="margin-bottom:18px;<?php echo $isCustomParent ? '' : 'display:none;'; ?>">
+                        <label>Parent Category Name</label>
+                        <input type="text" name="custom_parent_name" class="form-control" value="<?php echo $isCustomParent ? htmlspecialchars($editData['name']) : ''; ?>" placeholder="Example: Best sale of week" style="max-width:420px;">
+                    </div>
+
+                    <div class="form-group" id="apiParentBox" style="margin-bottom:0;<?php echo $isCustomParent ? 'display:none;' : ''; ?>">
                         <div style="margin-bottom:10px;">
                             <input type="text" id="searchParent" class="form-control" placeholder="Type to search..." style="max-width:400px;" oninput="filterParent(this.value)">
                         </div>
@@ -488,8 +528,21 @@ $usedParentIds = $rows ?: [];
         fileInput.style.display = checkbox.checked ? '' : 'none';
     }
 
+    function toggleParentSource() {
+        var selected = document.querySelector('input[name="parent_source"]:checked');
+        var isCustom = selected && selected.value === 'custom';
+        var customBox = document.getElementById('customParentBox');
+        var apiBox = document.getElementById('apiParentBox');
+        if (customBox) customBox.style.display = isCustom ? '' : 'none';
+        if (apiBox) apiBox.style.display = isCustom ? 'none' : '';
+        document.querySelectorAll('#apiParentBox input[name="parent_api_id"]').forEach(function(input) {
+            input.disabled = isCustom;
+        });
+    }
+
     var checkedRadio = document.querySelector('input[name="parent_api_id"]:checked');
     if (checkedRadio) onParentSelected(checkedRadio);
+    toggleParentSource();
     </script>
 <?php endif; ?>
 

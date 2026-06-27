@@ -70,7 +70,23 @@ try {
         `link` VARCHAR(500) DEFAULT NULL,
         `sort_order` INT DEFAULT 0,
         `is_active` TINYINT(1) DEFAULT 1,
+        `show_on_home` TINYINT(1) DEFAULT 0,
         `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    ) ENGINE=InnoDB");
+
+    $pdo->exec("CREATE TABLE IF NOT EXISTS `home_sections` (
+        `id` INT AUTO_INCREMENT PRIMARY KEY,
+        `title` VARCHAR(200) NOT NULL,
+        `subtitle` VARCHAR(300) DEFAULT NULL,
+        `section_source` ENUM('api','parent') NOT NULL DEFAULT 'api',
+        `parent_category_id` INT DEFAULT NULL,
+        `api_category_id` VARCHAR(100) NOT NULL,
+        `api_category_name` VARCHAR(200) NOT NULL,
+        `product_limit` INT NOT NULL DEFAULT 6,
+        `sort_order` INT DEFAULT 0,
+        `is_active` TINYINT(1) DEFAULT 1,
+        `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
     ) ENGINE=InnoDB");
 
     $pdo->exec("CREATE TABLE IF NOT EXISTS `site_settings` (
@@ -189,6 +205,9 @@ try {
         "ALTER TABLE `parent_categories` ADD COLUMN `price_markup` DECIMAL(10,2) NOT NULL DEFAULT 0.00 AFTER `allow_cart`",
         "ALTER TABLE `parent_categories` ADD COLUMN `price_markup_type` ENUM('fixed','percentage') NOT NULL DEFAULT 'fixed' AFTER `price_markup`",
         "ALTER TABLE `parent_categories` ADD COLUMN `is_featured` TINYINT(1) DEFAULT 0 AFTER `price_markup_type`",
+        "ALTER TABLE `offer_banners` ADD COLUMN `show_on_home` TINYINT(1) DEFAULT 0 AFTER `is_active`",
+        "ALTER TABLE `home_sections` ADD COLUMN `section_source` ENUM('api','parent') NOT NULL DEFAULT 'api' AFTER `subtitle`",
+        "ALTER TABLE `home_sections` ADD COLUMN `parent_category_id` INT DEFAULT NULL AFTER `section_source`",
         "ALTER TABLE `orders` ADD COLUMN `payment_method` VARCHAR(20) NOT NULL DEFAULT 'cod' AFTER `status`",
         "ALTER TABLE `orders` ADD COLUMN `payment_status` VARCHAR(20) NOT NULL DEFAULT 'pending' AFTER `payment_method`",
         "ALTER TABLE `orders` ADD COLUMN `payment_transaction_id` VARCHAR(100) DEFAULT NULL AFTER `payment_status`",
