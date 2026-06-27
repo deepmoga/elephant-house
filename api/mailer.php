@@ -20,11 +20,33 @@ function getMailer() {
     $mail->Password = $s['smtp_password'] ?? '';
     $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
     $mail->Port = intval($s['smtp_port'] ?? 587);
-    $mail->setFrom($s['smtp_from_email'] ?? $s['smtp_username'] ?? '', $s['smtp_from_name'] ?? 'Elephant House');
+
+    $fromEmail = $s['smtp_from_email'] ?? $s['smtp_username'] ?? '';
+    $fromName = $s['smtp_from_name'] ?? 'Elephant House';
+    $mail->setFrom($fromEmail, $fromName);
+    $mail->addReplyTo($fromEmail, $fromName);
     $mail->isHTML(true);
     $mail->CharSet = 'UTF-8';
+    $mail->XMailer = 'Elephant House Mailer';
+    $mail->addCustomHeader('X-Priority', '3');
+    $mail->addCustomHeader('Precedence', 'bulk');
+
+    $domain = 'elephanthouse.com.au';
+    $serverName = $_SERVER['SERVER_NAME'] ?? '';
+    if (!empty($serverName) && $serverName !== 'localhost') $domain = $serverName;
+    $mail->MessageID = '<' . bin2hex(random_bytes(8)) . '@' . $domain . '>';
 
     return ['mailer' => $mail, 'settings' => $s];
+}
+
+function htmlToPlainText($html) {
+    $text = preg_replace('/<br\s*\/?>|<\/p>|<\/tr>|<\/div>|<\/h[1-6]>/i', "\n", $html);
+    $text = preg_replace('/<\/td>\s*<td/i', ' | <td', $text);
+    $text = strip_tags($text);
+    $text = html_entity_decode($text, ENT_QUOTES, 'UTF-8');
+    $text = preg_replace('/[ \t]+/', ' ', $text);
+    $text = preg_replace('/\n{3,}/', "\n\n", $text);
+    return trim($text);
 }
 
 function emailTemplate($title, $bodyContent) {
@@ -32,21 +54,17 @@ function emailTemplate($title, $bodyContent) {
 <body style="margin:0;padding:0;background:#f4f4f4;font-family:Arial,Helvetica,sans-serif;">
 <table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f4f4;padding:30px 0;">
 <tr><td align="center">
-<table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;overflow:hidden;box-shadow:0 2px 10px rgba(0,0,0,0.08);">
-<!-- Header -->
+<table width="600" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:12px;overflow:hidden;">
 <tr><td style="background:#b52d31;padding:25px 30px;text-align:center;">
 <h1 style="color:#ffffff;margin:0;font-size:24px;font-weight:700;">Elephant House</h1>
-<p style="color:rgba(255,255,255,0.8);margin:5px 0 0;font-size:13px;">Premium Sri Lankan & Asian Grocery Store</p>
+<p style="color:rgba(255,255,255,0.8);margin:5px 0 0;font-size:13px;">Premium Sri Lankan &amp; Asian Grocery Store</p>
 </td></tr>
-<!-- Title -->
 <tr><td style="padding:30px 30px 15px;text-align:center;">
 <h2 style="color:#b52d31;margin:0;font-size:22px;">' . $title . '</h2>
 </td></tr>
-<!-- Body -->
 <tr><td style="padding:10px 30px 30px;font-size:14px;line-height:1.8;color:#444444;">
 ' . $bodyContent . '
 </td></tr>
-<!-- Footer -->
 <tr><td style="background:#f8f8f8;padding:20px 30px;text-align:center;font-size:12px;color:#999;">
 <p style="margin:0;">Thank you for shopping with Elephant House!</p>
 <p style="margin:5px 0 0;"><a href="' . SITE_URL . '" style="color:#b52d31;text-decoration:none;">Visit our store</a></p>
@@ -55,6 +73,14 @@ function emailTemplate($title, $bodyContent) {
 </td></tr>
 </table>
 </body></html>';
+}
+
+function sendMail($mail, $subject, $title, $bodyContent) {
+    $mail->Subject = $subject;
+    $html = emailTemplate($title, $bodyContent);
+    $mail->Body = $html;
+    $mail->AltBody = htmlToPlainText($title . "\n\n" . $bodyContent . "\n\nThank you for shopping with Elephant House!\n" . SITE_URL);
+    $mail->send();
 }
 
 function sendOrderConfirmationEmail($orderId) {
@@ -108,19 +134,14 @@ function sendOrderConfirmationEmail($orderId) {
         $m = getMailer();
         $mail = $m['mailer'];
         $mail->addAddress($order['email'], $order['name']);
-        $mail->Subject = 'Order Confirmation - #' . $order['order_number'];
-        $mail->Body = emailTemplate('Order Confirmed!', $body);
-        $mail->send();
+        sendMail($mail, 'Your Elephant House Order ' . $order['order_number'], 'Order Confirmed', $body);
 
-        // Send to admin
         $adminEmail = $m['settings']['admin_email'] ?? '';
         if (!empty($adminEmail)) {
             $mail2 = getMailer()['mailer'];
             $mail2->addAddress($adminEmail);
-            $mail2->Subject = 'New Order - #' . $order['order_number'] . ' - $' . number_format($order['total'], 2);
             $adminBody = '<p>A new order has been placed.</p>' . $body . '<p style="text-align:center;margin-top:20px;"><a href="' . SITE_URL . '/admin/orders.php?action=view&id=' . $orderId . '" style="background:#b52d31;color:#fff;padding:12px 30px;border-radius:8px;text-decoration:none;font-weight:600;display:inline-block;">View Order</a></p>';
-            $mail2->Body = emailTemplate('New Order Received', $adminBody);
-            $mail2->send();
+            sendMail($mail2, 'New Order ' . $order['order_number'], 'New Order Received', $adminBody);
         }
     } catch (Exception $e) {
         error_log('Order email failed: ' . $e->getMessage());
@@ -168,9 +189,7 @@ function sendOrderStatusEmail($orderId) {
         $m = getMailer();
         $mail = $m['mailer'];
         $mail->addAddress($order['email'], $order['name']);
-        $mail->Subject = 'Order Update - #' . $order['order_number'] . ' - ' . ucfirst($status);
-        $mail->Body = emailTemplate('Order Status Updated', $body);
-        $mail->send();
+        sendMail($mail, 'Your order ' . $order['order_number'] . ' is now ' . $status, 'Order Status Updated', $body);
     } catch (Exception $e) {
         error_log('Status email failed: ' . $e->getMessage());
     }
@@ -200,9 +219,7 @@ function sendPasswordResetEmail($email, $newPassword) {
         $m = getMailer();
         $mail = $m['mailer'];
         $mail->addAddress($email, $customer['name']);
-        $mail->Subject = 'Password Reset - Elephant House';
-        $mail->Body = emailTemplate('Password Reset', $body);
-        $mail->send();
+        sendMail($mail, 'Your new password for Elephant House', 'Password Reset', $body);
         return true;
     } catch (Exception $e) {
         error_log('Password reset email failed: ' . $e->getMessage());
