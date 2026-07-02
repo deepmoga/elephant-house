@@ -38,6 +38,9 @@ $currentAdminPage = basename($_SERVER['PHP_SELF'], '.php');
             <a href="<?php echo SITE_URL; ?>/admin/home-sections.php" class="<?php echo $currentAdminPage === 'home-sections' ? 'active' : ''; ?>">
                 <i class="fas fa-layer-group"></i> Home Sections
             </a>
+            <a href="<?php echo SITE_URL; ?>/admin/brand-logos.php" class="<?php echo $currentAdminPage === 'brand-logos' ? 'active' : ''; ?>">
+                <i class="fas fa-certificate"></i> Brand Logos
+            </a>
             <a href="<?php echo SITE_URL; ?>/admin/categories.php" class="<?php echo $currentAdminPage === 'categories' ? 'active' : ''; ?>">
                 <i class="fas fa-sitemap"></i> Categories
             </a>

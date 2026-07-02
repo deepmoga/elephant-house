@@ -70,7 +70,7 @@ foreach ($menuCategories as $mc) {
 
             <div class="search-bar">
                 <form action="<?php echo SITE_URL; ?>/search.php" method="GET">
-                    <input type="text" name="q" placeholder="Search for products, categories..." autocomplete="off">
+                    <input type="text" name="q" value="<?php echo htmlspecialchars($_GET['q'] ?? ''); ?>" placeholder="Search for products, categories..." autocomplete="off">
                     <button type="submit"><i class="fas fa-search"></i></button>
                 </form>
             </div>

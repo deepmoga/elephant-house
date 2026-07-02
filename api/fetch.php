@@ -156,6 +156,25 @@ function getActiveHomeSections() {
     return $stmt->fetchAll();
 }
 
+function ensureBrandLogosTable() {
+    $db = getDB();
+    try {
+        $db->exec("CREATE TABLE IF NOT EXISTS `brand_logos` (
+            `id` INT AUTO_INCREMENT PRIMARY KEY,
+            `image` VARCHAR(500) NOT NULL,
+            `sort_order` INT DEFAULT 0,
+            `is_active` TINYINT(1) DEFAULT 1,
+            `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        ) ENGINE=InnoDB");
+    } catch (PDOException $e) {}
+}
+
+function getActiveBrandLogos() {
+    ensureBrandLogosTable();
+    $db = getDB();
+    return $db->query("SELECT * FROM brand_logos WHERE is_active = 1 ORDER BY sort_order ASC, id ASC")->fetchAll();
+}
+
 function getMenuCategories() {
     $db = getDB();
     $stmt = $db->query("SELECT pc.*, GROUP_CONCAT(cm.api_category_id ORDER BY cm.sort_order ASC) as sub_api_ids, GROUP_CONCAT(cm.api_category_name ORDER BY cm.sort_order ASC SEPARATOR '||') as sub_api_names

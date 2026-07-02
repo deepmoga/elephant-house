@@ -998,6 +998,70 @@ img {
     font-size: 17px;
 }
 
+/* ---- BRAND LOGO CAROUSEL ---- */
+.brand-logo-section {
+    padding: 45px 0 55px;
+    background: var(--cream);
+}
+
+.brand-logo-panel {
+    background: var(--white);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: 0 8px 28px var(--shadow);
+}
+
+.brand-logo-header {
+    background: var(--primary);
+    color: var(--white);
+    padding: 14px 20px;
+    font-weight: 700;
+    font-size: 18px;
+}
+
+.brand-logo-carousel {
+    overflow: hidden;
+    padding: 22px 0;
+}
+
+.brand-logo-track {
+    display: flex;
+    align-items: center;
+    width: max-content;
+    animation: brandLogoScroll 28s linear infinite;
+}
+
+.brand-logo-carousel:hover .brand-logo-track {
+    animation-play-state: paused;
+}
+
+.brand-logo-item {
+    width: 180px;
+    height: 86px;
+    margin: 0 12px;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 14px 18px;
+    flex-shrink: 0;
+}
+
+.brand-logo-item img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    filter: saturate(0.9);
+}
+
+@keyframes brandLogoScroll {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+}
+
 /* ---- WHY SHOP SECTION ---- */
 .why-grid {
     display: grid;
@@ -1097,6 +1161,11 @@ img {
         padding: 18px 14px;
     }
     .home-section-product-img { height: 120px; }
+    .brand-logo-item {
+        width: 140px;
+        height: 72px;
+        margin: 0 8px;
+    }
     .why-grid { grid-template-columns: 1fr 1fr; gap: 15px; }
     .why-item { padding: 20px 15px; }
 }

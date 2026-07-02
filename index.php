@@ -8,6 +8,7 @@ $regularOffers = array_filter($offers, function($offer) { return empty($offer['s
 $parentCats = getParentCategories();
 $featuredCats = getFeaturedCategories();
 $homeSections = getActiveHomeSections();
+$brandLogos = getActiveBrandLogos();
 $apiCategories = getCategories();
 $blogs = getActiveBlogs(3);
 
@@ -385,6 +386,29 @@ $sectionProducts = homeSectionProducts($sectionViewAllCategory, $homeSection['pr
         </div>
         <div class="view-all-wrap">
             <a href="<?php echo SITE_URL; ?>/blogs.php" class="btn-view-all">View All Posts <i class="fas fa-arrow-right" style="margin-left:8px;"></i></a>
+        </div>
+    </div>
+</section>
+<?php endif; ?>
+
+<?php if (!empty($brandLogos)): ?>
+<section class="brand-logo-section">
+    <div class="container">
+        <div class="brand-logo-panel">
+            <div class="brand-logo-header">
+                <span>Featured Brands</span>
+            </div>
+            <div class="brand-logo-carousel">
+                <div class="brand-logo-track">
+                    <?php for ($loop = 0; $loop < 2; $loop++): ?>
+                        <?php foreach ($brandLogos as $logo): ?>
+                        <div class="brand-logo-item">
+                            <img src="<?php echo UPLOAD_URL . 'brands/' . htmlspecialchars($logo['image']); ?>" alt="">
+                        </div>
+                        <?php endforeach; ?>
+                    <?php endfor; ?>
+                </div>
+            </div>
         </div>
     </div>
 </section>

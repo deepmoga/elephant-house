@@ -89,6 +89,14 @@ try {
         `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
     ) ENGINE=InnoDB");
 
+    $pdo->exec("CREATE TABLE IF NOT EXISTS `brand_logos` (
+        `id` INT AUTO_INCREMENT PRIMARY KEY,
+        `image` VARCHAR(500) NOT NULL,
+        `sort_order` INT DEFAULT 0,
+        `is_active` TINYINT(1) DEFAULT 1,
+        `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    ) ENGINE=InnoDB");
+
     $pdo->exec("CREATE TABLE IF NOT EXISTS `site_settings` (
         `id` INT AUTO_INCREMENT PRIMARY KEY,
         `setting_key` VARCHAR(100) NOT NULL UNIQUE,
