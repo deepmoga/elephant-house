@@ -14,7 +14,7 @@ if (empty($categoryId)) {
 $result = getProductsByCategory($categoryId);
 $products = $result['data'] ?? [];
 
-$activeProducts = array_filter($products, function($p) { return !empty($p['is_active']); });
+$activeProducts = array_filter($products, 'isProductActive');
 $displayProducts = array_slice(array_values($activeProducts), 0, $limit);
 
 $output = [];

@@ -70,12 +70,14 @@ $isCustomParent = strpos($parentApiId, 'custom-') === 0;
         </div>
         <?php
         $result = getProductsByCategory($parentApiId);
-        $products = $result['data'] ?? [];
+        $products = getActiveProducts($result['data'] ?? []);
         ?>
         <?php if (!empty($products)): ?>
         <div class="product-grid">
             <?php foreach ($products as $product):
-                $price = $product['price_including_tax'] ?? 0;
+                $catId = $product['product_type_id'] ?? '';
+                $rawPrice = $product['price_including_tax'] ?? 0;
+                $price = applyPriceMarkup($rawPrice, $catId);
                 $imgUrl = $product['image_url'] ?? '';
                 $brand = $product['brand']['name'] ?? '';
             ?>
@@ -85,9 +87,6 @@ $isCustomParent = strpos($parentApiId, 'custom-') === 0;
                     <img src="<?php echo htmlspecialchars($imgUrl); ?>" alt="<?php echo htmlspecialchars($product['name']); ?>" loading="lazy">
                     <?php else: ?>
                     <div class="no-img"><i class="fas fa-image"></i></div>
-                    <?php endif; ?>
-                    <?php if (empty($product['is_active'])): ?>
-                    <span class="badge">Out of Stock</span>
                     <?php endif; ?>
                 </div>
                 <div class="product-info">

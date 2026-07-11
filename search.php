@@ -7,30 +7,15 @@ $categoryResults = [];
 
 if (!empty($query)) {
     $queryWords = preg_split('/\s+/', strtolower($query), -1, PREG_SPLIT_NO_EMPTY);
-    $products = [];
-    $cursor = null;
-    $pagesChecked = 0;
+    $products = getAllProductsForSearch();
 
-    do {
-        $allProducts = getProducts($cursor);
-        $batch = $allProducts['data'] ?? [];
-        $products = array_merge($products, $batch);
-        $pageInfo = $allProducts['page_info'] ?? [];
-        $cursor = $pageInfo['end_cursor'] ?? $pageInfo['next_cursor'] ?? null;
-        $hasNext = !empty($pageInfo['has_next_page']) && !empty($cursor);
-        $pagesChecked++;
-    } while ($hasNext && $pagesChecked < 12);
-
+    $seenProducts = [];
     foreach ($products as $product) {
-        $isActive = $product['is_active'] ?? $product['active'] ?? true;
-        if (empty($isActive)) continue;
-        $haystack = strtolower(implode(' ', [
-            $product['name'] ?? '',
-            $product['brand']['name'] ?? '',
-            $product['product_category']['name'] ?? '',
-            $product['sku'] ?? '',
-            $product['description'] ?? '',
-        ]));
+        if (!isProductActive($product)) continue;
+        $productId = $product['id'] ?? '';
+        if ($productId && isset($seenProducts[$productId])) continue;
+
+        $haystack = productSearchText($product);
         $matches = true;
         foreach ($queryWords as $word) {
             if (strpos($haystack, $word) === false) {
@@ -40,29 +25,51 @@ if (!empty($query)) {
         }
         if ($matches) {
             $results[] = $product;
+            if ($productId) {
+                $seenProducts[$productId] = true;
+            }
         }
     }
 
+    usort($results, function($a, $b) use ($query) {
+        $q = strtolower($query);
+        $aName = strtolower($a['name'] ?? '');
+        $bName = strtolower($b['name'] ?? '');
+        $aSku = strtolower($a['sku'] ?? '');
+        $bSku = strtolower($b['sku'] ?? '');
+        $scoreA = ($aName === $q || $aSku === $q ? 0 : (strpos($aName, $q) === 0 ? 1 : (strpos($aName, $q) !== false ? 2 : 3)));
+        $scoreB = ($bName === $q || $bSku === $q ? 0 : (strpos($bName, $q) === 0 ? 1 : (strpos($bName, $q) !== false ? 2 : 3)));
+        return $scoreA <=> $scoreB ?: strcmp($aName, $bName);
+    });
+    $results = array_slice($results, 0, 80);
+
     $parentCats = getParentCategories();
+    $seenCategories = [];
     foreach ($parentCats as $cat) {
         $catName = $cat['name'] ?: $cat['api_category_name'];
         if (stripos($catName, $query) !== false || stripos($cat['sub_api_names'] ?? '', $query) !== false) {
+            $categoryKey = 'parent-' . $cat['id'];
+            if (isset($seenCategories[$categoryKey])) continue;
             $categoryResults[] = [
                 'name' => $catName,
                 'url' => SITE_URL . '/category.php?id=' . $cat['id'],
                 'image' => $cat['image'] ?? '',
             ];
+            $seenCategories[$categoryKey] = true;
         }
     }
 
     $apiCategories = getCategories();
     foreach ($apiCategories as $cat) {
         if (stripos($cat['name'], $query) !== false) {
+            $categoryKey = 'api-' . $cat['id'];
+            if (isset($seenCategories[$categoryKey])) continue;
             $categoryResults[] = [
                 'name' => $cat['name'],
                 'url' => SITE_URL . '/products.php?category=' . urlencode($cat['id']),
                 'image' => '',
             ];
+            $seenCategories[$categoryKey] = true;
         }
     }
 }

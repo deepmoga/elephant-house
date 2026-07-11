@@ -8,7 +8,7 @@ if (!empty($productId)) {
     $product = getProductById($productId);
 }
 
-if (!$product) {
+if (!$product || !isProductActive($product)) {
     echo '<div class="page-header"><div class="container"><h1>Product Not Found</h1></div></div>';
     echo '<section class="section"><div class="container" style="text-align:center;padding:60px 20px;">';
     echo '<i class="fas fa-box-open" style="font-size:60px;color:var(--text-muted);margin-bottom:20px;display:block;"></i>';
@@ -28,7 +28,7 @@ $catName = $product['product_category']['name'] ?? '';
 $description = $product['description'] ?? '';
 $sku = $product['sku'] ?? '';
 $images = $product['images'] ?? [];
-$isActive = !empty($product['is_active']);
+$isActive = isProductActive($product);
 $weight = $product['weight'] ?? null;
 $weightUnit = $product['weight_unit'] ?? '';
 $cartAllowed = isCategoryCartAllowed($catId);
@@ -131,7 +131,7 @@ $cartAllowed = isCategoryCartAllowed($catId);
         if (!empty($catId)) {
             $related = getProductsByCategory($catId);
             $relatedProducts = array_filter($related['data'] ?? [], function($p) use ($product) {
-                return $p['id'] !== $product['id'] && !empty($p['is_active']);
+                return $p['id'] !== $product['id'] && isProductActive($p);
             });
             $relatedProducts = array_slice($relatedProducts, 0, 4);
             if (!empty($relatedProducts)):

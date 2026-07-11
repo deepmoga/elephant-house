@@ -1,6 +1,7 @@
 <?php
 if (session_status() === PHP_SESSION_NONE) { session_start(); }
 require_once __DIR__ . '/../config/database.php';
+require_once __DIR__ . '/fetch.php';
 header('Content-Type: application/json');
 
 $action = $_POST['action'] ?? '';
@@ -12,13 +13,30 @@ if (!isset($_SESSION['cart'])) {
 switch ($action) {
     case 'add':
         $id = trim($_POST['product_id'] ?? '');
-        $name = trim($_POST['name'] ?? '');
-        $image = trim($_POST['image'] ?? '');
-        $price = floatval($_POST['price'] ?? 0);
         $qty = max(1, intval($_POST['quantity'] ?? 1));
 
-        if (empty($id) || empty($name) || $price <= 0) {
+        if (empty($id)) {
             echo json_encode(['success' => false, 'message' => 'Invalid product data']);
+            exit;
+        }
+
+        $product = getProductById($id);
+        if (!$product || !isProductActive($product)) {
+            echo json_encode(['success' => false, 'message' => 'This product is no longer available.']);
+            exit;
+        }
+
+        $categoryId = $product['product_type_id'] ?? '';
+        if (!isCategoryCartAllowed($categoryId)) {
+            echo json_encode(['success' => false, 'message' => 'This product is available in-store only.']);
+            exit;
+        }
+
+        $name = trim($product['name'] ?? '');
+        $image = trim($product['image_url'] ?? '');
+        $price = applyPriceMarkup(floatval($product['price_including_tax'] ?? 0), $categoryId);
+        if ($name === '' || $price <= 0) {
+            echo json_encode(['success' => false, 'message' => 'This product cannot be added right now.']);
             exit;
         }
 

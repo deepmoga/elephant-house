@@ -14,7 +14,7 @@ $blogs = getActiveBlogs(3);
 
 $featuredProducts = getProducts();
 $products = $featuredProducts['data'] ?? [];
-$activeProducts = array_filter($products, function($p) { return !empty($p['is_active']); });
+$activeProducts = getActiveProducts($products);
 $latestProducts = array_slice(array_values($activeProducts), 0, 8);
 
 $firstFeaturedId = '';
@@ -27,7 +27,7 @@ if (!empty($featuredCats)) {
 
 function homeSectionProducts($categoryId, $limit) {
     $result = getProductsByCategory($categoryId);
-    $products = array_filter($result['data'] ?? [], function($p) { return !empty($p['is_active']); });
+    $products = getActiveProducts($result['data'] ?? []);
     return array_slice(array_values($products), 0, max(1, intval($limit)));
 }
 

@@ -18,6 +18,7 @@ if (!empty($categoryId)) {
     $result = getProducts();
     $products = $result['data'] ?? [];
 }
+$products = getActiveProducts($products);
 
 $allParentCats = getParentCategories();
 $db = getDB();
@@ -94,9 +95,6 @@ $db = getDB();
                             <img src="<?php echo htmlspecialchars($imgUrl); ?>" alt="<?php echo htmlspecialchars($product['name']); ?>" loading="lazy">
                             <?php else: ?>
                             <div class="no-img"><i class="fas fa-image"></i></div>
-                            <?php endif; ?>
-                            <?php if (empty($product['is_active'])): ?>
-                            <span class="badge">Out of Stock</span>
                             <?php endif; ?>
                         </div>
                         <div class="product-info">

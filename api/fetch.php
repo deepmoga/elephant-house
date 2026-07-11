@@ -38,23 +38,32 @@ function getCategories() {
     return [];
 }
 
-function getProductsByCategory($categoryId, $cursor = null) {
-    $params = [
+function searchProducts($filters = [], $offset = 0, $pageSize = 1000) {
+    $params = array_merge([
         'type' => 'products',
-        'product_type_id' => $categoryId,
-    ];
-    if ($cursor) {
-        $params['after'] = $cursor;
-    }
+        'page_size' => min(max((int)$pageSize, 1), 1000),
+        'offset' => max((int)$offset, 0),
+    ], $filters);
     $data = apiGet('search', $params);
     if ($data && isset($data['data'])) {
         return $data;
     }
-    return ['data' => [], 'page_info' => ['has_next_page' => false]];
+    return ['data' => []];
 }
 
-function getProducts($cursor = null) {
+function getProductsByCategory($categoryId, $offset = 0, $pageSize = 1000) {
+    return searchProducts(['product_type_id' => $categoryId], $offset, $pageSize);
+}
+
+function getProductsBySku($sku, $offset = 0, $pageSize = 1000) {
+    return searchProducts(['sku' => strtolower(trim($sku))], $offset, $pageSize);
+}
+
+function getProducts($cursor = null, $pageSize = null) {
     $params = [];
+    if ($pageSize !== null) {
+        $params['page_size'] = min(max((int)$pageSize, 1), 1000);
+    }
     if ($cursor) {
         $params['after'] = $cursor;
     }
@@ -62,7 +71,112 @@ function getProducts($cursor = null) {
     if ($data && isset($data['data'])) {
         return $data;
     }
-    return ['data' => [], 'page_info' => ['has_next_page' => false]];
+    return ['data' => [], 'version' => []];
+}
+
+function isProductActive($product) {
+    return !empty($product['is_active'] ?? $product['active'] ?? false);
+}
+
+function getActiveProducts($products) {
+    return array_values(array_filter(is_array($products) ? $products : [], 'isProductActive'));
+}
+
+function productSearchText($product) {
+    $parts = [
+        $product['name'] ?? '',
+        $product['variant_name'] ?? '',
+        $product['sku'] ?? '',
+        $product['brand']['name'] ?? '',
+        $product['product_category']['name'] ?? '',
+        $product['description'] ?? '',
+    ];
+
+    foreach (($product['categories'] ?? []) as $category) {
+        $parts[] = $category['name'] ?? '';
+    }
+    foreach (($product['product_codes'] ?? []) as $code) {
+        $parts[] = $code['code'] ?? '';
+    }
+
+    return strtolower(implode(' ', array_filter($parts)));
+}
+
+function getProductSearchCacheFile() {
+    $cacheDir = __DIR__ . '/../cache';
+    if (!is_dir($cacheDir) && !@mkdir($cacheDir, 0775, true)) {
+        return rtrim(sys_get_temp_dir(), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . 'elephant-products-search.json';
+    }
+    if (!is_writable($cacheDir)) {
+        return rtrim(sys_get_temp_dir(), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . 'elephant-products-search.json';
+    }
+    return $cacheDir . '/products-search.json';
+}
+
+function getAllProductsForSearch($ttlSeconds = 900) {
+    $cacheFile = getProductSearchCacheFile();
+    $staleProducts = [];
+    if (is_file($cacheFile) && (time() - filemtime($cacheFile)) < $ttlSeconds) {
+        $cached = json_decode(file_get_contents($cacheFile), true);
+        if (is_array($cached)) {
+            return getActiveProducts($cached);
+        }
+    }
+    if (is_file($cacheFile)) {
+        $cached = json_decode(file_get_contents($cacheFile), true);
+        if (is_array($cached)) {
+            $staleProducts = getActiveProducts($cached);
+        }
+    }
+
+    $products = [];
+    $cursor = null;
+    $pagesChecked = 0;
+    $seenCursors = [];
+
+    do {
+        $result = getProducts($cursor, 1000);
+        $batch = $result['data'] ?? [];
+        if (empty($batch)) {
+            break;
+        }
+        $products = array_merge($products, $batch);
+
+        // Lightspeed collection pagination uses version.max as the next `after` cursor.
+        $nextCursor = $result['version']['max'] ?? null;
+        if ($nextCursor === null) {
+            $versions = array_filter(array_column($batch, 'version'), 'is_numeric');
+            $nextCursor = empty($versions) ? null : max($versions);
+        }
+        $hasNext = $nextCursor !== null
+            && (string)$nextCursor !== (string)$cursor
+            && empty($seenCursors[(string)$nextCursor]);
+        if ($nextCursor !== null) {
+            $seenCursors[(string)$nextCursor] = true;
+        }
+        $cursor = $nextCursor;
+        $pagesChecked++;
+    } while ($hasNext && $pagesChecked < 100);
+
+    if (empty($products)) {
+        return $staleProducts;
+    }
+
+    $activeProducts = [];
+    $seenProducts = [];
+    foreach (getActiveProducts($products) as $product) {
+        $productId = $product['id'] ?? '';
+        if ($productId !== '' && isset($seenProducts[$productId])) {
+            continue;
+        }
+        $activeProducts[] = $product;
+        if ($productId !== '') {
+            $seenProducts[$productId] = true;
+        }
+    }
+
+    @file_put_contents($cacheFile, json_encode($activeProducts), LOCK_EX);
+    return $activeProducts;
 }
 
 function getSetting($key) {

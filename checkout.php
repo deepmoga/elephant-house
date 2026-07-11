@@ -38,16 +38,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['proceed_payment']) &&
     $state = trim($_POST['state'] ?? '');
     $postcode = trim($_POST['postcode'] ?? '');
     $notes = trim($_POST['notes'] ?? '');
-    $shippingCost = floatval($_POST['shipping_cost_val'] ?? 0);
+    $shippingCost = 0;
+    $shippingAccepted = !empty($_POST['shipping_accepted']);
 
     if (empty($name) || empty($email)) {
         $msg = 'Name and email are required.';
         $msgType = 'danger';
-    } elseif ($shippingMethod === 'delivery' && (empty($address) || empty($city) || empty($state) || empty($postcode))) {
+    } elseif ($shippingMethod === 'delivery' && (empty($address) || empty($city) || empty($state) || empty($postcode) || !ctype_digit($postcode))) {
         $msg = 'Please fill in all shipping address fields.';
         $msgType = 'danger';
+    } elseif ($shippingMethod === 'delivery' && !$shippingAccepted) {
+        $msg = 'Please accept the shipping charge for parcels up to 5 kg.';
+        $msgType = 'danger';
     } else {
-        if ($shippingMethod === 'pickup') {
+        if ($shippingMethod === 'delivery') {
+            $db = getDB();
+            $shippingStmt = $db->prepare("SELECT price FROM shipping_rates WHERE is_active = 1 AND CAST(postcode_from AS UNSIGNED) <= ? AND CAST(postcode_to AS UNSIGNED) >= ? ORDER BY price ASC LIMIT 1");
+            $shippingStmt->execute([intval($postcode), intval($postcode)]);
+            $shippingRate = $shippingStmt->fetch();
+            if (!$shippingRate) {
+                $msg = 'Sorry, delivery is not available for this postcode. Please choose pickup from store.';
+                $msgType = 'danger';
+            } else {
+                $shippingCost = floatval($shippingRate['price']);
+            }
+        } else {
             $shippingCost = 0;
             $address = 'Pickup from Store';
             $city = $allSettings['address'] ?? 'Store';
@@ -55,6 +70,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['proceed_payment']) &&
             $postcode = '';
         }
 
+        if ($msgType !== 'danger') {
         $_SESSION['checkout'] = [
             'name' => $name, 'email' => $email, 'phone' => $phone,
             'shipping_method' => $shippingMethod, 'shipping_cost' => $shippingCost,
@@ -133,6 +149,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['proceed_payment']) &&
 
             header('Location: ' . SITE_URL . '/checkout.php?success=' . urlencode($orderNumber));
             exit;
+        }
         }
     }
 }
@@ -339,6 +356,11 @@ $storePhone = $allSettings['phone'] ?? '';
                             </div>
                             <input type="hidden" name="shipping_cost_val" id="shippingCostVal" value="0">
 
+                            <label id="shippingAcceptance" style="display:flex;align-items:flex-start;gap:9px;margin:14px 0;padding:12px;background:var(--cream);border-radius:8px;cursor:pointer;font-size:13px;line-height:1.45;color:var(--text-light);">
+                                <input type="checkbox" name="shipping_accepted" value="1" required style="accent-color:var(--primary);width:18px;height:18px;flex:0 0 auto;margin-top:1px;" <?php echo !empty($_POST['shipping_accepted']) ? 'checked' : ''; ?>>
+                                <span>I accept that the displayed shipping charge covers a parcel up to 5 kg. Additional charges may apply above 5 kg.</span>
+                            </label>
+
                             <!-- Coupon -->
                             <div style="margin:12px 0;padding:12px;background:var(--cream);border-radius:8px;">
                                 <?php if (!empty($_SESSION['coupon'])): ?>
@@ -408,12 +430,16 @@ document.addEventListener('DOMContentLoaded', function() {
     // Shipping method toggle
     window.toggleShipping = function() {
         var delivery = document.querySelector('input[name="shipping_method"][value="delivery"]').checked;
+        var shippingAcceptance = document.getElementById('shippingAcceptance');
+        var shippingCheckbox = shippingAcceptance.querySelector('input[type="checkbox"]');
         document.getElementById('deliveryFields').style.display = delivery ? '' : 'none';
         document.getElementById('pickupInfo').style.display = delivery ? 'none' : '';
         document.getElementById('optDelivery').style.borderColor = delivery ? 'var(--primary)' : 'var(--border)';
         document.getElementById('optDelivery').style.background = delivery ? 'var(--cream)' : '';
         document.getElementById('optPickup').style.borderColor = delivery ? 'var(--border)' : 'var(--primary)';
         document.getElementById('optPickup').style.background = delivery ? '' : 'var(--cream)';
+        shippingAcceptance.style.display = delivery ? 'flex' : 'none';
+        shippingCheckbox.required = delivery;
 
         if (!delivery) {
             currentShipping = 0;
@@ -421,6 +447,8 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('shippingMsg').style.display = 'none';
         }
     };
+
+    toggleShipping();
 
     // Postcode shipping lookup
     var postcodeInput = document.getElementById('shippingPostcode');
