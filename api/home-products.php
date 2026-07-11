@@ -30,6 +30,7 @@ foreach ($displayProducts as $p) {
         'image' => $p['image_url'] ?? '',
         'brand' => $p['brand']['name'] ?? '',
         'category' => $p['product_category']['name'] ?? '',
+        'in_stock' => isProductInStock($p),
     ];
 }
 

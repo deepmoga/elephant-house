@@ -146,6 +146,9 @@ if (!empty($query)) {
                     <?php else: ?>
                     <div class="no-img"><i class="fas fa-image"></i></div>
                     <?php endif; ?>
+                    <?php if (!isProductInStock($product)): ?>
+                    <span class="badge">Out of Stock</span>
+                    <?php endif; ?>
                 </div>
                 <div class="product-info">
                     <?php if (!empty($brand)): ?>

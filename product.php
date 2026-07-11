@@ -29,6 +29,7 @@ $description = $product['description'] ?? '';
 $sku = $product['sku'] ?? '';
 $images = $product['images'] ?? [];
 $isActive = isProductActive($product);
+$isInStock = isProductInStock($product);
 $weight = $product['weight'] ?? null;
 $weightUnit = $product['weight_unit'] ?? '';
 $cartAllowed = isCategoryCartAllowed($catId);
@@ -80,7 +81,7 @@ $cartAllowed = isCategoryCartAllowed($catId);
 
                 <div class="product-price" style="border:none;padding:0;margin-bottom:20px;">
                     <span class="price" style="font-size:32px;">$<?php echo number_format($price, 2); ?></span>
-                    <?php if (!$isActive): ?>
+                    <?php if (!$isInStock): ?>
                     <span style="background:var(--warm);color:#fff;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;margin-left:10px;">Out of Stock</span>
                     <?php else: ?>
                     <span style="background:#28a745;color:#fff;padding:4px 12px;border-radius:20px;font-size:12px;font-weight:600;margin-left:10px;">In Stock</span>
@@ -97,7 +98,7 @@ $cartAllowed = isCategoryCartAllowed($catId);
                 <p style="margin-bottom:8px;font-size:14px;color:var(--text-light);"><strong>Weight:</strong> <?php echo htmlspecialchars($weight . ' ' . $weightUnit); ?></p>
                 <?php endif; ?>
 
-                <?php if ($isActive && $cartAllowed): ?>
+                <?php if ($isInStock && $cartAllowed): ?>
                 <div style="margin:25px 0;padding:20px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
                     <div class="quantity-selector">
                         <button type="button" class="qty-btn qty-minus">-</button>
@@ -112,7 +113,7 @@ $cartAllowed = isCategoryCartAllowed($catId);
                         <i class="fas fa-shopping-cart"></i> Add to Cart
                     </button>
                 </div>
-                <?php elseif ($isActive && !$cartAllowed): ?>
+                <?php elseif ($isInStock && !$cartAllowed): ?>
                 <div style="margin:25px 0;padding:15px 20px;border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--cream);border-radius:8px;">
                     <p style="color:var(--text-light);font-size:14px;margin:0;"><i class="fas fa-store" style="margin-right:8px;color:var(--primary);"></i> This product is available in-store only. Visit us or call to order.</p>
                 </div>
@@ -153,6 +154,9 @@ $cartAllowed = isCategoryCartAllowed($catId);
                         <img src="<?php echo htmlspecialchars($rpImg); ?>" alt="<?php echo htmlspecialchars($rp['name']); ?>" loading="lazy">
                         <?php else: ?>
                         <div class="no-img"><i class="fas fa-image"></i></div>
+                        <?php endif; ?>
+                        <?php if (!isProductInStock($rp)): ?>
+                        <span class="badge">Out of Stock</span>
                         <?php endif; ?>
                     </div>
                     <div class="product-info">

@@ -25,6 +25,10 @@ switch ($action) {
             echo json_encode(['success' => false, 'message' => 'This product is no longer available.']);
             exit;
         }
+        if (!isProductInStock($product)) {
+            echo json_encode(['success' => false, 'message' => 'This product is out of stock.']);
+            exit;
+        }
 
         $categoryId = $product['product_type_id'] ?? '';
         if (!isCategoryCartAllowed($categoryId)) {

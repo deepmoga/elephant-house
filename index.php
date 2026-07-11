@@ -46,6 +46,9 @@ function renderHomeProductCard($product) {
             <?php else: ?>
             <div class="no-img"><i class="fas fa-image"></i></div>
             <?php endif; ?>
+            <?php if (!isProductInStock($product)): ?>
+            <span class="badge">Out of Stock</span>
+            <?php endif; ?>
         </div>
         <div class="home-section-product-info">
             <?php if (!empty($brand)): ?><span><?php echo htmlspecialchars($brand); ?></span><?php endif; ?>
@@ -305,6 +308,9 @@ $sectionProducts = homeSectionProducts($sectionViewAllCategory, $homeSection['pr
                     <?php else: ?>
                     <div class="no-img"><i class="fas fa-image"></i></div>
                     <?php endif; ?>
+                    <?php if (!isProductInStock($product)): ?>
+                    <span class="badge">Out of Stock</span>
+                    <?php endif; ?>
                 </div>
                 <div class="product-info">
                     <?php if (!empty($brand)): ?><span class="product-brand"><?php echo htmlspecialchars($brand); ?></span><?php endif; ?>
@@ -448,6 +454,7 @@ function loadFeaturedProducts(btn) {
                 html += '<a href="' + _featSiteUrl + '/product.php?id=' + encodeURIComponent(p.id) + '" class="product-card">' +
                     '<div class="product-img">' +
                     (p.image ? '<img src="' + p.image.replace(/"/g, '&quot;') + '" alt="" loading="lazy">' : '<div class="no-img"><i class="fas fa-image"></i></div>') +
+                    (!p.in_stock ? '<span class="badge">Out of Stock</span>' : '') +
                     '</div>' +
                     '<div class="product-info">' +
                     (p.brand ? '<span class="product-brand">' + p.brand.replace(/</g, '&lt;') + '</span>' : '') +

@@ -30,6 +30,35 @@ function apiGet($endpoint, $params = []) {
     return json_decode($response, true);
 }
 
+function inventoryApiPost($payload = []) {
+    $url = 'https://elephanthouse.retail.lightspeed.app/api/2026-07/inventory';
+    $ch = curl_init();
+    curl_setopt_array($ch, [
+        CURLOPT_URL => $url,
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_TIMEOUT => 60,
+        CURLOPT_POST => true,
+        CURLOPT_POSTFIELDS => json_encode($payload),
+        CURLOPT_SSL_VERIFYPEER => false,
+        CURLOPT_HTTPHEADER => [
+            'Accept: application/json',
+            'Content-Type: application/json',
+            'Authorization: Bearer ' . API_BEARER_TOKEN,
+        ],
+    ]);
+
+    $response = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+
+    if ($httpCode !== 200 || $response === false) {
+        return null;
+    }
+
+    $data = json_decode($response, true);
+    return is_array($data) ? $data : null;
+}
+
 function getCategories() {
     $data = apiGet('product_categories');
     if ($data && isset($data['data']['data']['categories'])) {
@@ -80,6 +109,113 @@ function isProductActive($product) {
 
 function getActiveProducts($products) {
     return array_values(array_filter(is_array($products) ? $products : [], 'isProductActive'));
+}
+
+function getInventoryCacheFile() {
+    $cacheDir = __DIR__ . '/../cache';
+    if (!is_dir($cacheDir) && !@mkdir($cacheDir, 0775, true)) {
+        return rtrim(sys_get_temp_dir(), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . 'elephant-inventory-levels.json';
+    }
+    if (!is_writable($cacheDir)) {
+        return rtrim(sys_get_temp_dir(), DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . 'elephant-inventory-levels.json';
+    }
+    return $cacheDir . '/inventory-levels.json';
+}
+
+function getInventoryLevelsMap($ttlSeconds = 300) {
+    static $requestCache = null;
+    if ($requestCache !== null && $ttlSeconds > 0) {
+        return $requestCache;
+    }
+
+    $cacheFile = getInventoryCacheFile();
+    $staleLevels = [];
+    if (is_file($cacheFile)) {
+        $cached = json_decode(file_get_contents($cacheFile), true);
+        if (is_array($cached)) {
+            $staleLevels = $cached;
+            if ((time() - filemtime($cacheFile)) < $ttlSeconds) {
+                $requestCache = $cached;
+                return $requestCache;
+            }
+        }
+    }
+
+    $levels = [];
+    $cursor = null;
+    $seenCursors = [];
+    $complete = true;
+
+    for ($page = 0; $page < 20; $page++) {
+        $payload = [
+            'size' => 5000,
+            'include_deleted' => false,
+            'sort_direction' => 'asc',
+        ];
+        if ($cursor !== null) {
+            $payload['after'] = $cursor;
+        }
+
+        $records = inventoryApiPost($payload);
+        if ($records === null) {
+            $complete = false;
+            break;
+        }
+        if (empty($records)) {
+            break;
+        }
+
+        $versions = [];
+        foreach ($records as $record) {
+            $productId = $record['product_id'] ?? '';
+            if ($productId === '' || !isset($record['current_inventory_level'])) {
+                continue;
+            }
+            $level = floatval($record['current_inventory_level']);
+            $levels[$productId] = ($levels[$productId] ?? 0) + $level;
+            if (isset($record['version']) && is_numeric($record['version'])) {
+                $versions[] = $record['version'];
+            }
+        }
+
+        $nextCursor = empty($versions) ? null : max($versions);
+        if ($nextCursor === null || (string)$nextCursor === (string)$cursor || isset($seenCursors[(string)$nextCursor])) {
+            break;
+        }
+        $seenCursors[(string)$nextCursor] = true;
+        $cursor = $nextCursor;
+
+        if (count($records) < 5000) {
+            break;
+        }
+    }
+
+    if (!$complete || empty($levels)) {
+        $requestCache = $staleLevels;
+        return $requestCache;
+    }
+
+    @file_put_contents($cacheFile, json_encode($levels), LOCK_EX);
+    $requestCache = $levels;
+    return $requestCache;
+}
+
+function getProductInventoryLevel($productId) {
+    if (empty($productId)) {
+        return null;
+    }
+    $levels = getInventoryLevelsMap();
+    return array_key_exists($productId, $levels) ? floatval($levels[$productId]) : null;
+}
+
+function isProductInStock($product) {
+    if (!isProductActive($product)) {
+        return false;
+    }
+    $level = array_key_exists('current_inventory_level', $product)
+        ? floatval($product['current_inventory_level'])
+        : getProductInventoryLevel($product['id'] ?? '');
+    return $level === null || $level >= 0;
 }
 
 function productSearchText($product) {
