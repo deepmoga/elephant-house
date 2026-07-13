@@ -215,7 +215,7 @@ function isProductInStock($product) {
     $level = array_key_exists('current_inventory_level', $product)
         ? floatval($product['current_inventory_level'])
         : getProductInventoryLevel($product['id'] ?? '');
-    return $level === null || $level >= 0;
+    return $level === null || $level > 0;
 }
 
 function productSearchText($product) {
