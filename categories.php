@@ -3,6 +3,17 @@ require_once __DIR__ . '/includes/header.php';
 
 $parentCats = getParentCategories();
 $apiCategories = getCategories();
+$subcategoryGroups = [];
+$apiCategoryImages = [];
+foreach ($parentCats as $parentCat) {
+    $subcategories = getSubcategoryImages($parentCat['id']);
+    $subcategoryGroups[$parentCat['id']] = $subcategories;
+    foreach ($subcategories as $subcategory) {
+        if (!empty($subcategory['image']) && empty($apiCategoryImages[$subcategory['api_category_id']])) {
+            $apiCategoryImages[$subcategory['api_category_id']] = $subcategory['image'];
+        }
+    }
+}
 ?>
 
 <div class="page-header">
@@ -31,19 +42,20 @@ $apiCategories = getCategories();
                     <div class="accent-line" style="margin:12px 0 0;"></div>
                 </div>
 
-                <?php if (!empty($pCat['sub_api_ids'])): ?>
+                <?php $subcategories = $subcategoryGroups[$pCat['id']] ?? []; ?>
+                <?php if (!empty($subcategories)): ?>
                 <div class="category-grid">
-                    <?php
-                    $subIds = explode(',', $pCat['sub_api_ids']);
-                    $subNames = explode('||', $pCat['sub_api_names']);
-                    foreach ($subIds as $idx => $subId):
-                        $subName = trim($subNames[$idx] ?? '');
-                    ?>
-                    <a href="<?php echo SITE_URL; ?>/products.php?category=<?php echo urlencode(trim($subId)); ?>" class="category-card">
+                    <?php foreach ($subcategories as $subcategory): ?>
+                    <a href="<?php echo SITE_URL; ?>/products.php?category=<?php echo urlencode($subcategory['api_category_id']); ?>" class="category-card">
                         <div class="category-card-img">
+                            <?php if (!empty($subcategory['image'])): ?>
+                            <img src="<?php echo UPLOAD_URL . htmlspecialchars($subcategory['image']); ?>" alt="<?php echo htmlspecialchars($subcategory['api_category_name']); ?>" loading="lazy">
+                            <div class="cat-overlay"></div>
+                            <?php else: ?>
                             <i class="fas fa-utensils"></i>
+                            <?php endif; ?>
                         </div>
-                        <h3><?php echo htmlspecialchars($subName); ?></h3>
+                        <h3><?php echo htmlspecialchars($subcategory['api_category_name']); ?></h3>
                     </a>
                     <?php endforeach; ?>
                 </div>
@@ -70,7 +82,12 @@ $apiCategories = getCategories();
                 <?php foreach ($apiCategories as $cat): ?>
                 <a href="<?php echo SITE_URL; ?>/products.php?category=<?php echo urlencode($cat['id']); ?>" class="category-card">
                     <div class="category-card-img">
+                        <?php if (!empty($apiCategoryImages[$cat['id']])): ?>
+                        <img src="<?php echo UPLOAD_URL . htmlspecialchars($apiCategoryImages[$cat['id']]); ?>" alt="<?php echo htmlspecialchars($cat['name']); ?>" loading="lazy">
+                        <div class="cat-overlay"></div>
+                        <?php else: ?>
                         <i class="fas fa-utensils"></i>
+                        <?php endif; ?>
                     </div>
                     <h3><?php echo htmlspecialchars($cat['name']); ?></h3>
                 </a>

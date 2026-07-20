@@ -12,10 +12,13 @@ $brandLogos = getActiveBrandLogos();
 $apiCategories = getCategories();
 $blogs = getActiveBlogs(3);
 
-$featuredProducts = getProducts();
-$products = $featuredProducts['data'] ?? [];
-$activeProducts = getActiveProducts($products);
-$latestProducts = array_slice(array_values($activeProducts), 0, 8);
+$latestProducts = getAllProductsForSearch();
+usort($latestProducts, function($a, $b) {
+    $createdA = strtotime($a['created_at'] ?? '') ?: 0;
+    $createdB = strtotime($b['created_at'] ?? '') ?: 0;
+    return $createdB <=> $createdA;
+});
+$latestProducts = array_slice($latestProducts, 0, 8);
 
 $firstFeaturedId = '';
 if (!empty($featuredCats)) {
